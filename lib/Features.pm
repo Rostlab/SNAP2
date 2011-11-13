@@ -39,8 +39,32 @@ my %index=(
     T => 16, 
     W => 17, 
     Y => 18, 
-    V => 19
+    V => 19,
+    X => 20,
 );
+#Normalized SIMK990101 Distance-dependent statistical potential (contacts within 0-5 Angstrooms) Simons, K.T., Ruczinski, I., Kooperberg, C., Fox, B.A., Bystroff, C. and Baker,D. Proteins 34, 82-95 (1999)
+my @contact_potentials=(['0.656','0.857','0.813','0.842','0.802','0.815','0.815','0.704','0.839','0.622','0.651','0.868','0.724','0.742','0.724','0.752','0.692','0.789','0.761','0.603','0'],
+['0.857','0.802','0.603','0.400','0.905','0.610','0.399','0.677','0.667','0.843','0.788','0.929','0.762','0.723','0.682','0.700','0.689','0.579','0.653','0.842','0'],
+['0.813','0.603','0.467','0.544','0.839','0.607','0.639','0.563','0.708','0.862','0.850','0.682','0.722','0.816','0.630','0.596','0.597','0.823','0.760','0.898','0'],
+['0.842','0.400','0.544','0.737','0.920','0.710','0.807','0.621','0.522','0.888','0.861','0.353','0.838','0.923','0.625','0.511','0.565','0.910','0.894','0.887','0'],
+['0.802','0.905','0.839','0.920','0.000','0.810','0.973','0.791','0.807','0.760','0.753','1.000','0.728','0.748','0.692','0.755','0.819','0.747','0.775','0.749','0'],
+['0.815','0.610','0.607','0.710','0.810','0.615','0.687','0.703','0.698','0.792','0.740','0.612','0.696','0.767','0.644','0.686','0.619','0.692','0.695','0.744','0'],
+['0.815','0.399','0.639','0.807','0.973','0.687','0.913','0.769','0.668','0.797','0.789','0.344','0.770','0.810','0.654','0.570','0.595','0.774','0.785','0.800','0'],
+['0.704','0.677','0.563','0.621','0.791','0.703','0.769','0.519','0.744','0.855','0.831','0.712','0.768','0.794','0.637','0.603','0.613','0.807','0.752','0.802','0'],
+['0.839','0.667','0.708','0.522','0.807','0.698','0.668','0.744','0.618','0.752','0.755','0.712','0.716','0.726','0.600','0.665','0.609','0.642','0.721','0.773','0'],
+['0.622','0.843','0.862','0.888','0.760','0.792','0.797','0.855','0.752','0.585','0.660','0.796','0.675','0.634','0.932','0.834','0.824','0.647','0.643','0.632','0'],
+['0.651','0.788','0.850','0.861','0.753','0.740','0.789','0.831','0.755','0.660','0.631','0.794','0.659','0.620','0.850','0.818','0.833','0.643','0.628','0.668','0'],
+['0.868','0.929','0.682','0.353','1.000','0.612','0.344','0.712','0.712','0.796','0.794','0.934','0.771','0.729','0.726','0.721','0.658','0.613','0.643','0.804','0'],
+['0.724','0.762','0.722','0.838','0.728','0.696','0.770','0.768','0.716','0.675','0.659','0.771','0.655','0.618','0.755','0.788','0.829','0.670','0.619','0.713','0'],
+['0.742','0.723','0.816','0.923','0.748','0.767','0.810','0.794','0.726','0.634','0.620','0.729','0.618','0.612','0.669','0.821','0.859','0.656','0.704','0.678','0'],
+['0.724','0.682','0.630','0.625','0.692','0.644','0.654','0.637','0.600','0.932','0.850','0.726','0.755','0.669','0.694','0.667','0.721','0.489','0.545','0.868','0'],
+['0.752','0.700','0.596','0.511','0.755','0.686','0.570','0.603','0.665','0.834','0.818','0.721','0.788','0.821','0.667','0.627','0.582','0.855','0.835','0.771','0'],
+['0.692','0.689','0.597','0.565','0.819','0.619','0.595','0.613','0.609','0.824','0.833','0.658','0.829','0.859','0.721','0.582','0.633','0.843','0.855','0.769','0'],
+['0.789','0.579','0.823','0.910','0.747','0.692','0.774','0.807','0.642','0.647','0.643','0.613','0.670','0.656','0.489','0.855','0.843','0.732','0.697','0.758','0'],
+['0.761','0.653','0.760','0.894','0.775','0.695','0.785','0.752','0.721','0.643','0.628','0.643','0.619','0.704','0.545','0.835','0.855','0.697','0.703','0.718','0'],
+['0.603','0.842','0.898','0.887','0.749','0.744','0.800','0.802','0.773','0.632','0.668','0.804','0.713','0.678','0.868','0.771','0.769','0.758','0.718','0.592','0'],
+['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']);
+
 my %abs_biochem_properties = (
 		A => {mass=>71,       vol=>88.6,     hyd=>1.8,      cbeta=>0,  hbreaker=>0,       charge=>0},
 		R => {mass=>156,      vol=>173.4,    hyd=>-4.5,     cbeta=>0,  hbreaker=>0,       charge=>1},
@@ -65,28 +89,35 @@ my %abs_biochem_properties = (
         X => {mass=>0,        vol=>0.0,      hyd=>0,        cbeta=>0,  hbreaker=>0,       charge=>0},);
                                         
 #linear normalization of bio-chemical amino acid properties
+    #VINM940103 Normalized flexibility parameters (B-values) for each residue surrounded by one rigid neighbour (Vihinen et al., 1994)
+    #BLAM930101 Alpha helix propensity of position 44 in T4 lysozyme (Blaber et al., 1993)
+    #SNEP660101 Relations between chemical structure and biological activity in peptides: Principal component I (Sneath, 1966)
+    #RICJ880113 Relative preference value at C2 (Richardson-Richardson, 1988)
+    #DAYM780201 A model of evolutionary change in proteins: Relative mutability (Dayhoff et al., 1978b)
+    #QIAN880123 Weights for beta-sheet at the window position of 3 (Qian-Sejnowski, 1988)
+    #KLEP840101 Prediction of protein function from sequence properties: Discriminant analysis of a data base: Net charge (Klein et al., 1984)
 my %normalized_biochem_properties =	( 
-		A => {mass=>0.109,    vol=>0.170,    hyd=>0.700,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-        R => {mass=>0.767,    vol=>0.676,    hyd=>0.000,    cbeta=>0,      hbreaker=>0,   charge=>1},
-        N => {mass=>0.442,    vol=>0.322,    hyd=>0.111,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-     	D => {mass=>0.450,    vol=>0.304,    hyd=>0.111,    cbeta=>0,      hbreaker=>0,   charge=>0},
-        C => {mass=>0.357,    vol=>0.289,    hyd=>0.778,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-		Q => {mass=>0.550,    vol=>0.499,    hyd=>0.111,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-		E => {mass=>0.558,    vol=>0.467,    hyd=>0.111,    cbeta=>0,      hbreaker=>0,   charge=>0},
-        G => {mass=>0.000,    vol=>0.000,    hyd=>0.456,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-        H => {mass=>0.620,    vol=>0.555,    hyd=>0.144,    cbeta=>0,      hbreaker=>0,   charge=>1},
-        I => {mass=>0.434,    vol=>0.636,    hyd=>1.000,    cbeta=>1,      hbreaker=>0,   charge=>0.5},
-        L => {mass=>0.434,    vol=>0.636,    hyd=>0.922,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-        K => {mass=>0.550,    vol=>0.647,    hyd=>0.067,    cbeta=>0,      hbreaker=>0,   charge=>1},
-        M => {mass=>0.574,    vol=>0.613,    hyd=>0.711,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-        F => {mass=>0.698,    vol=>0.774,    hyd=>0.811,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-        P => {mass=>0.310,    vol=>0.314,    hyd=>0.322,    cbeta=>0,      hbreaker=>1,   charge=>0.5},
-        S => {mass=>0.233,    vol=>0.172,    hyd=>0.411,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-        T => {mass=>0.341,    vol=>0.334,    hyd=>0.422,    cbeta=>1,      hbreaker=>0,   charge=>0.5},
-        W => {mass=>1.000,    vol=>1.000,    hyd=>0.400,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-        Y => {mass=>0.822,    vol=>0.796,    hyd=>0.356,    cbeta=>0,      hbreaker=>0,   charge=>0.5},
-        V => {mass=>0.326,    vol=>0.476,    hyd=>0.967,    cbeta=>1,      hbreaker=>0,   charge=>0.5}, 
-        X => {mass=>0.000,    vol=>0.000,    hyd=>0.000,    cbeta=>0,  	   hbreaker=>0,   charge=>0},);
+		A => {mass=>0.109,    vol=>0.170,    hyd=>0.700,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.133,    DAYM780201=>0.707,    RICJ880113=>0.632,    VINM940103=>0.508,    BLAM930101=>1.000,  SNEP660101=>0.653,  charge=>0.5},
+        R => {mass=>0.767,    vol=>0.676,    hyd=>0.000,    cbeta=>0,      hbreaker=>0,   KLEP840101=>1.000,    QIAN880123=>0.429,    DAYM780201=>0.405,    RICJ880113=>1.000,    VINM940103=>0.780,    BLAM930101=>0.945,  SNEP660101=>0.421,  charge=>1},
+        N => {mass=>0.442,    vol=>0.322,    hyd=>0.111,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.600,    DAYM780201=>1.000,    RICJ880113=>0.368,    VINM940103=>0.746,    BLAM930101=>0.835,  SNEP660101=>0.736,  charge=>0.5},
+     	D => {mass=>0.450,    vol=>0.304,    hyd=>0.111,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.000,    QIAN880123=>0.362,    DAYM780201=>0.759,    RICJ880113=>0.263,    VINM940103=>0.746,    BLAM930101=>0.844,  SNEP660101=>0.091,  charge=>0},
+        C => {mass=>0.357,    vol=>0.289,    hyd=>0.778,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.676,    DAYM780201=>0.017,    RICJ880113=>0.526,    VINM940103=>0.042,    BLAM930101=>0.844,  SNEP660101=>0.496,  charge=>0.5},
+		Q => {mass=>0.550,    vol=>0.499,    hyd=>0.111,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.000,    DAYM780201=>0.647,    RICJ880113=>0.737,    VINM940103=>0.907,    BLAM930101=>0.954,  SNEP660101=>0.826,  charge=>0.5},
+		E => {mass=>0.558,    vol=>0.467,    hyd=>0.111,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.000,    QIAN880123=>0.286,    DAYM780201=>0.724,    RICJ880113=>0.789,    VINM940103=>1.000,    BLAM930101=>0.876,  SNEP660101=>0.223,  charge=>0},
+        G => {mass=>0.000,    vol=>0.000,    hyd=>0.456,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.629,    DAYM780201=>0.267,    RICJ880113=>0.000,    VINM940103=>0.712,    BLAM930101=>0.723,  SNEP660101=>0.000,  charge=>0.5},
+        H => {mass=>0.620,    vol=>0.555,    hyd=>0.144,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.638,    DAYM780201=>0.414,    RICJ880113=>0.842,    VINM940103=>0.280,    BLAM930101=>0.887,  SNEP660101=>0.372,  charge=>1},
+        I => {mass=>0.434,    vol=>0.636,    hyd=>1.000,    cbeta=>1,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.514,    DAYM780201=>0.672,    RICJ880113=>0.105,    VINM940103=>0.364,    BLAM930101=>0.965,  SNEP660101=>0.934,  charge=>0.5},
+        L => {mass=>0.434,    vol=>0.636,    hyd=>0.922,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.438,    DAYM780201=>0.190,    RICJ880113=>0.316,    VINM940103=>0.407,    BLAM930101=>0.988,  SNEP660101=>1.000,  charge=>0.5},
+        K => {mass=>0.550,    vol=>0.647,    hyd=>0.067,    cbeta=>0,      hbreaker=>0,   KLEP840101=>1.000,    QIAN880123=>0.238,    DAYM780201=>0.328,    RICJ880113=>0.895,    VINM940103=>0.805,    BLAM930101=>0.934,  SNEP660101=>0.562,  charge=>1},
+        M => {mass=>0.574,    vol=>0.613,    hyd=>0.711,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.352,    DAYM780201=>0.655,    RICJ880113=>0.579,    VINM940103=>0.246,    BLAM930101=>0.971,  SNEP660101=>0.769,  charge=>0.5},
+        F => {mass=>0.698,    vol=>0.774,    hyd=>0.811,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.429,    DAYM780201=>0.198,    RICJ880113=>0.053,    VINM940103=>0.000,    BLAM930101=>0.893,  SNEP660101=>0.612,  charge=>0.5},
+        P => {mass=>0.310,    vol=>0.314,    hyd=>0.322,    cbeta=>0,      hbreaker=>1,   KLEP840101=>0.500,    QIAN880123=>0.095,    DAYM780201=>0.328,    RICJ880113=>0.000,    VINM940103=>0.983,    BLAM930101=>0.000,  SNEP660101=>0.041,  charge=>0.5},
+        S => {mass=>0.233,    vol=>0.172,    hyd=>0.411,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.810,    DAYM780201=>0.879,    RICJ880113=>0.737,    VINM940103=>0.771,    BLAM930101=>0.876,  SNEP660101=>0.628,  charge=>0.5},
+        T => {mass=>0.341,    vol=>0.334,    hyd=>0.422,    cbeta=>1,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>1.000,    DAYM780201=>0.681,    RICJ880113=>0.368,    VINM940103=>0.542,    BLAM930101=>0.879,  SNEP660101=>0.438,  charge=>0.5},
+        W => {mass=>1.000,    vol=>1.000,    hyd=>0.400,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.343,    DAYM780201=>0.000,    RICJ880113=>0.105,    VINM940103=>0.034,    BLAM930101=>0.890,  SNEP660101=>0.190,  charge=>0.5},
+        Y => {mass=>0.822,    vol=>0.796,    hyd=>0.356,    cbeta=>0,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.448,    DAYM780201=>0.198,    RICJ880113=>0.053,    VINM940103=>0.398,    BLAM930101=>0.931,  SNEP660101=>0.273,  charge=>0.5},
+        V => {mass=>0.326,    vol=>0.476,    hyd=>0.967,    cbeta=>1,      hbreaker=>0,   KLEP840101=>0.500,    QIAN880123=>0.610,    DAYM780201=>0.483,    RICJ880113=>0.263,    VINM940103=>0.288,    BLAM930101=>0.905,  SNEP660101=>0.785,  charge=>0.5}, 
+        X => {mass=>0.000,    vol=>0.000,    hyd=>0.000,    cbeta=>0,  	   hbreaker=>0,   KLEP840101=>0.000,    QIAN880123=>0.000,    DAYM780201=>0.000,    RICJ880113=>0.000,    VINM940103=>0.000,    BLAM930101=>0.000,  SNEP660101=>0.000,  charge=>0},);
 
 #returns array with the normalized property values for the given amino acid
 #requires amino acid (one of the 20 aa from above)
@@ -107,9 +138,68 @@ sub get_normalized_property {
 	my ($aa,$property) = @_;
 	$aa=uc $aa;
 	confess "\nError: unknown amino acid: $aa\n" if (!(exists $normalized_biochem_properties{$aa}));
-	confess "\nError: unknown property: $property\nPlease only use:\nmass\nvol\nhyd\ncbeta\nhbreaker\ncharge\n" if (!(exists $normalized_biochem_properties{$aa}{$property}));
+	confess "\nError: unknown property: $property\nPlease only use:\n" . join "\n",(keys %{$normalized_biochem_properties{$aa}}) if (!(exists $normalized_biochem_properties{$aa}{$property}));
 	return $normalized_biochem_properties{$aa}{$property};
 }
+
+sub contact_potentials{
+    my ($aa,$debug)=@_;
+    $aa=uc $aa;
+    confess "\nError: unknown amino acid: $aa\n" unless defined $index{$aa};
+    my @potentials=@{$contact_potentials[$index{$aa}]};
+    cluck( Dumper (\@potentials)) if $debug;
+    return @potentials;
+}
+
+sub pairwise_potential{
+    my ($aa1,$aa2,$debug)=@_;
+    $aa1=uc $aa1;
+    $aa2=uc $aa2;
+    confess "\nError: unknown amino acid: $aa1\n" unless defined $index{$aa1};
+    confess "\nError: unknown amino acid: $aa2\n" unless defined $index{$aa2};
+    my $pairwise_potential=$contact_potentials[$index{$aa1}][$index{$aa2}];
+    cluck ( Dumper (\$pairwise_potential) ) if $debug;
+    return $pairwise_potential;
+}
+
+sub potentials{
+    my ($length,$pos,$seqarray,$win,$aa,$debug)=@_;
+    confess ("Window size needs to be uneven (window: '$win')") if $win % 2 == 0;
+    confess ("Window size needs to be > 0 (window: '$win')") if $win < 1;
+    confess ("Position '$pos' is out of bounds: [1,$length]") if ($pos > $length || $pos < 1);
+    confess ("Position '$pos' is out of bounds (max is: ".scalar(@$seqarray).")") if ($pos>scalar(@$seqarray));
+    my $opos=$pos-1;
+    $pos-=($win+1)/2;
+    my @return;
+    for (my $i = 0; $i < $win; $i++) {
+       if ($pos<0 || $pos >= $length){
+        push (@return,0);
+       } 
+       else {
+           #skip the requested position itself -> only do the surrounding residues
+        push @return,pairwise_potential($$seqarray[$pos],$aa) unless $pos==$opos;
+       }
+    $pos++;
+    }
+    cluck( Dumper (@return) ) if $debug;
+    return @return;  
+}
+
+sub potentialDiff{
+    my ($wt,$mut,$debug)=@_;
+    my @wt_potentials=contact_potentials($wt,$debug);
+    my @mut_potentials=contact_potentials($mut,$debug);
+    my @return;
+    foreach my $i (0..@wt_potentials-1) {
+        my $diff=$wt_potentials[$i]-$mut_potentials[$i];
+        my $sign=0;
+        $sign = 1 if $diff<0;
+        push @return,abs($diff),$sign;
+    }
+    cluck ( Dumper (\@return)) if $debug;
+    return @return;
+}
+
 sub indices{
     my ($length,$pos,$seqarray,$win,$index,$debug)=@_;
     confess ("Window size needs to be uneven (window: '$win')") if $win % 2 == 0;

@@ -76,8 +76,54 @@ sub all{
         push (@data,\@features);
         #cluck (Dumper (\@features));
     }
+cluck (Dumper (\@data)) if $debug;
+return \@data;
+}
+
+sub quick{
+    my $debug=shift;
+    my @data;
+    my $seqlength=length($main::sequence);
+
+    #Global Features, only extracted once
+    my @aacomp=Features::aa_comp($seqlength,\@main::sequence_array,$debug);
+    my @protlength=Features::protein_length($seqlength,$debug);
+
+    #Loop over all mutants and extract all features
+    foreach my $i (0..@main::mutants-1){
+        my @features;
+        
+        #split mutation A36D into wildtype, position, mutant: 'A', '36', 'D'
+        my ($wt,$pos,$mut)=Features::wt_pos_mut($main::mutants[$i],$debug);
+        
+        #Global
+        push @features,@aacomp,@protlength;
+
+        #Sequence window
+        push @features,Features::indices($seqlength,$pos,\@main::sequence_array,17,'VINM940103',$debug);
+        push @features,Features::indices($seqlength,$pos,\@main::sequence_array,9,'BLAM930101',$debug);
+        push @features,Features::indices($seqlength,$pos,\@main::sequence_array,5,'DAYM780201',$debug);
+        push @features,Features::indices($seqlength,$pos,\@main::sequence_array,5,'QIAN880123',$debug);
+        push @features,Features::indices($seqlength,$pos,\@main::sequence_array,13,'KLEP840101',$debug);
+        push @features,Features::sequenceprofile(\@main::sequence_array,$seqlength,$pos,9,$debug);
+        push @features,Features::potentials($seqlength,$pos,\@main::sequence_array,9,$wt,$debug);
+        push @features,Features::potentials($seqlength,$pos,\@main::sequence_array,9,$mut,$debug);
+
+        #Difference
+        push @features,Features::indexDiff($wt,$mut,'SNEP660101',$debug);
+        push @features,Features::indexDiff($wt,$mut,'RICJ880113',$debug);
+        push @features,Features::indexDiff($wt,$mut,'vol',$debug);
+        push @features,Features::indexDiff($wt,$mut,'KLEP840101',$debug);
+        push @features,Features::indexDiff($wt,$mut,'VINM940103',$debug);
+        push @features,Features::residue_representation($mut,$debug);
+        push @features,Features::potentialDiff($wt,$mut,$debug);
+
+        #append to data array
+        push (@data,\@features);
+    }
     cluck (Dumper (\@data)) if $debug;
     return \@data;
+    
 }
 
 
