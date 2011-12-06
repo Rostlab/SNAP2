@@ -23,7 +23,7 @@ sub all{
     predictprotein($workdir,$fasta,$fcs,$cpu,$debug);
 
     #secondary structure prediction of mutants with prof
-    if ($allmuts && $cpu>1){
+    if ($cpu>1){
         my @mutlist=splitmuts(\@main::mutants,$cpu,$workdir,$debug);
         my $pm=new ForkManager($cpu);
         foreach my $mut (@mutlist) {
@@ -41,6 +41,25 @@ sub all{
 
     #sift prediction for all mutants
     sift($muts,$workdir,$debug);
+
+    #quicksnap prediction for all 19 non-native per position
+    #qsnap($name,$fasta,$workdir,$debug);
+}
+sub qsnap{
+    my ($name,$in,$workdir,$debug)=@_;
+    my $out="$workdir/$name.quick";
+    unless (-e $out){
+        my @cmd=("perl",
+            "/mnt/project/resnap/trunk/quicksnap.pl",
+            "--in=$in",
+            "--mut=all",
+            "--out=$out",
+            "--quiet",
+            "--print-collections");
+        cluck (@cmd) if $debug;
+        system(@cmd) && confess "'@cmd' failed: ".($?>>8);
+    }
+
 }
 sub sift{
     my ($muts,$workdir,$debug)=@_;

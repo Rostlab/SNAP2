@@ -16,6 +16,7 @@ use Mdparser;
 use Disisparser;
 use Isisparser;
 use Profbvalparser;
+use Snapparser;
 use Carp qw(cluck :DEFAULT);
 
 my @amino_acids = qw(A R N D C Q E G H I L K M F P S T W Y V X);
@@ -63,7 +64,7 @@ my @contact_potentials=(['0.656','0.857','0.813','0.842','0.802','0.815','0.815'
 ['0.789','0.579','0.823','0.910','0.747','0.692','0.774','0.807','0.642','0.647','0.643','0.613','0.670','0.656','0.489','0.855','0.843','0.732','0.697','0.758','0'],
 ['0.761','0.653','0.760','0.894','0.775','0.695','0.785','0.752','0.721','0.643','0.628','0.643','0.619','0.704','0.545','0.835','0.855','0.697','0.703','0.718','0'],
 ['0.603','0.842','0.898','0.887','0.749','0.744','0.800','0.802','0.773','0.632','0.668','0.804','0.713','0.678','0.868','0.771','0.769','0.758','0.718','0.592','0'],
-['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']);
+['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']);
 
 my %abs_biochem_properties = (
 		A => {mass=>71,       vol=>88.6,     hyd=>1.8,      cbeta=>0,  hbreaker=>0,       charge=>0},
@@ -184,8 +185,21 @@ sub potentials{
     cluck( Dumper (@return) ) if $debug;
     return @return;  
 }
-
 sub potentialDiff{
+    my ($length,$pos,$seqarray,$win,$wt,$mut,$debug)=@_;
+    my @return;
+    my @wtpot=potentials($length,$pos,$seqarray,$win,$wt,$debug);
+    my @mutpot=potentials($length,$pos,$seqarray,$win,$mut,$debug);
+    foreach my $i (0..@wtpot-1) {
+        my $diff=$wtpot[$i]-$mutpot[$i];
+        my $sign=0;
+        $sign=1 if $diff<0;
+        push @return,abs($diff),$sign;
+    }
+    cluck( Dumper (\@return) ) if $debug;
+    return @return;
+}
+sub potentialProfileDiff{
     my ($wt,$mut,$debug)=@_;
     my @wt_potentials=contact_potentials($wt,$debug);
     my @mut_potentials=contact_potentials($mut,$debug);
@@ -924,6 +938,39 @@ sub md{
     cluck( Dumper (@return) ) if $debug;
     return @return;
     
+}
+sub qsnap_pred{
+    my ($snap,$mutation,$debug)=@_;
+    my %preds=$$snap->all();
+    confess ("No Quicksnap prediction found for mutation: $mutation") unless defined $preds{$mutation};
+    my $score=$preds{$mutation};
+    my @return=($score > 0 ? qw(0 1) : qw(1 0));
+    push @return,abs($score/100);
+    cluck( Dumper (\@return)) if $debug;
+    return @return;
+}
+sub qsnap_avg{
+    my ($snap,$pos,$win,$length,$debug)=@_;
+    my @return;
+    my @avg=$$snap->avg();
+    confess ("Window size needs to be uneven (window: '$win')") if $win % 2 == 0;
+    confess ("Window size needs to be > 0 (window: '$win')") if $win < 1;
+    confess ("Position '$pos' is out of bounds: [1,$length]") if ($pos > $length || $pos < 1);
+    confess ("Inconsistency: found " . scalar(@avg) . "Quicksnap predictions when expecting $length") if scalar(@avg) != $length;
+    $pos-=($win+1)/2;
+    for (my $i = 0; $i < $win; $i++) {
+       if ($pos<0 || $pos >= $length){
+           push (@return,0,0,0);
+       } 
+       else {
+           my $score=$avg[$pos];
+           push @return,($score > 0 ? qw(0 1) : qw(1 0)),abs($score/100);
+       }
+    $pos++;
+    }
+    cluck( Dumper (\@return) ) if $debug;
+    return @return;  
+
 }
 sub sift{
     my ($siftfile,$mutation,$debug)=@_;

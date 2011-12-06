@@ -36,8 +36,9 @@ use lib glob( $fannlib );
 use Run;
 use Extract;
 use Predict;
+use Prediction;
 
-my($in,$out,$mut,$workdir,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs);
+my($in,$out,$mut,$workdir,$plot,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs);
 my $debug=0;
 $cpu=1;
 my $args_ok=GetOptions( 'in=s'    =>  \$in,
@@ -50,7 +51,8 @@ my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'print-collections' => \$pc,
                         'quiet' => \$quiet,
                         'force-cache-store' => \$fcs,
-                        'cpus=i' => \$cpu
+                        'cpus=i' => \$cpu,
+                        'plot'  => \$plot
 );
 sub die_usage{
     my $msg=shift;
@@ -125,12 +127,14 @@ elsif ($mut){
     if ($mut eq 'all'){
         @mutants=allmuts(\$mut,$workdir,\@sequence_array,$debug); 
         $allmuts=1;
+        $mut="$workdir/$name.allmuts";
     }
     else{
         $mut=Cwd::realpath($mut);
         open (FHIN,$mut) || confess "\nError: unable to open mutations file: $mut\n";
         while(<FHIN>){
-            confess "\nError: Invalid mutation line: $_\n" unless /^[A-Z]\d+[A-Z]$/o;
+            #check every mutant
+            confess "\nError: Invalid mutation line: $_\n" unless /^[ARNDCQEGHILKMFPSTWYV]\d+[ARNDCQEGHILKMFPSTWYV]$/o;
             chomp $_;
             push (@mutants,$_);
         }
@@ -188,6 +192,7 @@ my %expected_accuracy=( -9 => '97%',
                          9 => '95%');
 
 #Write output file
+my $prediction=new Prediction();
 open OUT,">$out" or confess "Unable to write output file: $out";
 foreach my $data_point (0..@predictions-1) {
     my ($neu,$non)=qw(0 0);
@@ -197,12 +202,21 @@ foreach my $data_point (0..@predictions-1) {
         $non+=$$network[1];
         print OUT int(100*$$network[0]) ." ". int(100*$$network[1]) ."\t| " if $pc;
     }
-    say OUT "Sum = ". int(10*($neu-$non)) if $pc;
-    my $ri=int($neu-$non);
-    say OUT $mutants[$data_point] . " => Prediction: " . ($ri>0 ? "Non-neutral" : "Neutral") . "\tReliability Index: " . abs($ri) . "\tExpected accuracy: " . $expected_accuracy{$ri}; 
+    say OUT "Sum = ". int(100*($neu-$non)/scalar(@{$predictions[0]})) if $pc;
+    if ($labeled_muts_file){
+        $prediction->add([$neu/10,$non/10],($labels[$data_point] == 1 ? [0,1] : [1,0]));
+    }
+    my $ri=$neu-$non;
+    say OUT $mutants[$data_point] . " => Prediction: " . ($ri>0 ? "Non-neutral" : "Neutral") . "\tReliability Index: " . int(abs($ri)) . "\tExpected accuracy: " . $expected_accuracy{int($ri)}; 
     
 }
 close OUT;
+$prediction->write("$out.labeledpred") if $labeled_muts_file;
+if ($plot){
+    use lib glob ("$snap2dir/plots");
+    use Plot;
+    Plot::from_prediction($name,\@sequence_array,\@predictions,$out,$debug);
+}
 warn "\nOutput written to $out\n" unless $quiet;
 exit(0);
 
@@ -215,14 +229,14 @@ sub allmuts{
     my @mutants;
     my @amino_acids=qw( A R N D C Q E G H I L K M F P S T W Y V );
     for (my $i = 0; $i < scalar(@$seq_arr); $i++) {
+        my $wt=($$seq_arr[$i] eq "X" ? "A" : $$seq_arr[$i]);
         foreach my $aa (@amino_acids) {
-            push @mutants,$$seq_arr[$i] . ($i+1) . $aa unless $$seq_arr[$i] eq $aa;
+            push @mutants,$wt . ($i+1) . $aa unless $wt eq $aa;
         }
     }
     open MUT,">$workdir/$name.allmuts" or confess "Unable to write mutant file: $workdir/$name.allmuts";
     say MUT join "\n",@mutants;
     close MUT;
-    $$mut="$workdir/$name.allmuts";
 
     return @mutants;
 }

@@ -24,6 +24,7 @@ sub all{
     my $swiss=new Swissparser("$workdir/$main::name.blastswiss",$main::swiss_dat,$main::db_swiss);
     my $profbval=new Profbvalparser("$workdir/$main::name.profbval");
     my $oriprof=new Profparser("$workdir/$main::name.reprof_ORI");
+    #my $snap=new Snapparser("$workdir/$main::name.quick");
 
 
 
@@ -47,30 +48,47 @@ sub all{
         push @features,Features::blastPerc($seqlength,$pos,\$pssm,1,$debug);
         push @features,Features::psic($seqlength,$pos,\$psic,13,$debug);
         push @features,Features::sequenceprofile(\@main::sequence_array,$seqlength,$pos,9,$debug);
-        push @features,Features::isis($seqlength,$pos,\$isis,17,$debug);
-        push @features,Features::disis($seqlength,$pos,\$disis,5,$debug);
-        push @features,Features::md($seqlength,$pos,\$md,9,$debug);
-        push @features,Features::sec_bin($seqlength,$pos,\$prof,13,$debug);
-        push @features,Features::sec_raw($seqlength,$pos,\$prof,9,$debug);
+        #push @features,Features::isis($seqlength,$pos,\$isis,17,$debug);
+        #push @features,Features::disis($seqlength,$pos,\$disis,5,$debug);
+        #push @features,Features::md($seqlength,$pos,\$md,9,$debug);
+        #push @features,Features::sec_bin($seqlength,$pos,\$prof,13,$debug);
+        #push @features,Features::sec_raw($seqlength,$pos,\$prof,9,$debug);
         push @features,Features::acc_rel($seqlength,$pos,\$prof,5,$debug);
-        push @features,Features::acc_bin($seqlength,$pos,\$prof,5,$debug);
-        push @features,Features::indices($seqlength,$pos,\@main::sequence_array,17,'charge',$debug);
-        push @features,Features::indices($seqlength,$pos,\@main::sequence_array,17,'hyd',$debug);
-        push @features,Features::indices($seqlength,$pos,\@main::sequence_array,17,'vol',$debug);
+        #push @features,Features::acc_bin($seqlength,$pos,\$prof,5,$debug);
+        #push @features,Features::indices($seqlength,$pos,\@main::sequence_array,17,'charge',$debug);
+        #push @features,Features::indices($seqlength,$pos,\@main::sequence_array,17,'hyd',$debug);
+        #push @features,Features::indices($seqlength,$pos,\@main::sequence_array,17,'vol',$debug);
         push @features,Features::profbval($seqlength,$pos,\$profbval,5,$debug);
         
         #Difference features
         push @features,Features::pssmDiff($wt,$pos,$mut,\$pssm,$debug);
         push @features,Features::percDiff($wt,$pos,$mut,\$pssm,$debug);
         push @features,Features::psicDiff($wt,$pos,$mut,\$psic,$debug);
-        push @features,Features::indexDiff($wt,$mut,'vol',$debug);
-        push @features,Features::indexDiff($wt,$mut,'charge',$debug);
-        push @features,Features::profDiff($wt,$pos,$mut,"$workdir/$main::name.reprof_$main::mutants[$i]",\$oriprof,$debug);
+        #push @features,Features::indexDiff($wt,$mut,'vol',$debug);
+        #push @features,Features::indexDiff($wt,$mut,'charge',$debug);
+        #push @features,Features::profDiff($wt,$pos,$mut,"$workdir/$main::name.reprof_$main::mutants[$i]",\$oriprof,$debug);
 
         #Mutation based features
         push @features,Features::swiss($wt,$pos,$mut,\$swiss,$main::phat_matrix,$debug);
         push @features,Features::sift("$workdir/$main::name.SIFTprediction",$main::mutants[$i],$debug);
         push @features,Features::residue_representation($mut,$debug);
+
+        #Additional indices from quicksnap
+        #push @features,Features::indices($seqlength,$pos,\@main::sequence_array,17,'VINM940103',$debug);
+        #push @features,Features::indices($seqlength,$pos,\@main::sequence_array,9,'BLAM930101',$debug);
+        #push @features,Features::indices($seqlength,$pos,\@main::sequence_array,5,'DAYM780201',$debug);
+        #push @features,Features::indices($seqlength,$pos,\@main::sequence_array,5,'QIAN880123',$debug);
+        #push @features,Features::indices($seqlength,$pos,\@main::sequence_array,13,'KLEP840101',$debug);
+        #push @features,Features::indexDiff($wt,$mut,'SNEP660101',$debug);
+        #push @features,Features::indexDiff($wt,$mut,'RICJ880113',$debug);
+        #push @features,Features::indexDiff($wt,$mut,'KLEP840101',$debug);
+        #push @features,Features::indexDiff($wt,$mut,'VINM940103',$debug);
+        #push @features,Features::potentials($seqlength,$pos,\@main::sequence_array,9,$wt,$debug);
+        #push @features,Features::potentials($seqlength,$pos,\@main::sequence_array,9,$mut,$debug);
+        push @features,Features::potentialDiff($seqlength,$pos,\@main::sequence_array,9,$wt,$mut,$debug);
+        push @features,Features::potentialProfileDiff($wt,$mut,$debug);
+        #push @features,Features::qsnap_pred(\$snap,$main::mutants[$i],$debug);
+        #push @features,Features::qsnap_avg(\$snap,$pos,5,$seqlength,$debug);
         
         #append to data array
         push (@data,\@features);
@@ -116,7 +134,8 @@ sub quick{
         push @features,Features::indexDiff($wt,$mut,'KLEP840101',$debug);
         push @features,Features::indexDiff($wt,$mut,'VINM940103',$debug);
         push @features,Features::residue_representation($mut,$debug);
-        push @features,Features::potentialDiff($wt,$mut,$debug);
+        push @features,Features::potentialProfileDiff($wt,$mut,$debug);
+        push @features,Features::potentialDiff($seqlength,$pos,\@main::sequence_array,9,$wt,$mut,$debug);
 
         #append to data array
         push (@data,\@features);

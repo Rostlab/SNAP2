@@ -126,12 +126,14 @@ elsif ($mut){
     if ($mut eq 'all'){
         @mutants=allmuts(\$mut,$workdir,\@sequence_array,$debug); 
         $allmuts=1;
+        $mut="$workdir/$name.allmuts";
     }
     else{
         $mut=Cwd::realpath($mut);
         open (FHIN,$mut) || confess "\nError: unable to open mutations file: $mut\n";
         while(<FHIN>){
-            confess "\nError: Invalid mutation line: $_\n" unless /^[A-Z]\d+[A-Z]$/o;
+            #check every mutant
+            confess "\nError: Invalid mutation line: $_\n" unless /^[ARNDCQEGHILKMFPSTWYV]\d+[ARNDCQEGHILKMFPSTWYV]$/o;
             chomp $_;
             push (@mutants,$_);
         }
@@ -188,12 +190,6 @@ my %expected_accuracy=( -9 => '97%',
                          8 => '91%',
                          9 => '95%');
 
-#plotting
-my @plotdata;
-push @plotdata,\@sequence_array if $plot;
-my @avgpred;
-my $avg=0;
-#end
 
 #Write output file
 open OUT,">$out" or confess "Unable to write output file: $out";
@@ -205,17 +201,6 @@ foreach my $data_point (0..@predictions-1) {
         $non+=$$network[1];
         print OUT int(100*$$network[0]) ." ". int(100*$$network[1]) ."\t| " if $pc;
     }
-    #for plotting
-    if ($plot){
-        if ($data_point % 19 != 0){
-            $avg+=100*($neu-$non)/scalar(@{$predictions[0]});
-        }
-        else {
-            push @avgpred,int($avg/19);
-            $avg=100*($neu-$non)/scalar(@{$predictions[0]});
-        }
-    }
-    #end
     say OUT "Sum = ". int(100*($neu-$non)/scalar(@{$predictions[0]})) if $pc;
     my $ri=$neu-$non;
     say OUT $mutants[$data_point] . " => Prediction: " . ($ri>0 ? "Non-neutral" : "Neutral") . "\tReliability Index: " . int(abs($ri)) . "\tExpected accuracy: " . $expected_accuracy{int($ri)}; 
@@ -223,31 +208,10 @@ foreach my $data_point (0..@predictions-1) {
 }
 close OUT;
 
-push @plotdata,\@avgpred if $plot;
 if ($plot){
-use lib glob ("$snap2dir/plots");
-use GD::Graph::lines;
-my $graph = GD::Graph::lines->new(1920, 1080);
-$graph->set( 
-    x_label           => 'Residues',
-    x_label_position => 0.5,
-    x_all_ticks => 1,
-    y_label           => 'Effect',
-    title             => "In Silico Mutagenesis of $name",
-    y_max_value       => 100,
-    y_min_value    => -100,
-    zero_axis_only => 1,
-    transparent => 0,
-    bgclr => "white",
-    y_tick_number     => 10,
-    y_label_skip      => 2 
-) or die $graph->error;
-$graph->set_x_label_font(['verdana', 'arial'],18);
-my $gd = $graph->plot(\@plotdata) or die $graph->error;
-open(IMG, ">$out.png") or die $!; 
-binmode IMG;
-print IMG $gd->png;
-close IMG;
+    use lib glob ("$snap2dir/plots");
+    use Plot;
+    Plot::from_prediction($name,\@sequence_array,\@predictions,$out,$debug);
 }
 warn "\nOutput written to $out\n" unless $quiet;
 exit(0);
@@ -261,14 +225,14 @@ sub allmuts{
     my @mutants;
     my @amino_acids=qw( A R N D C Q E G H I L K M F P S T W Y V );
     for (my $i = 0; $i < scalar(@$seq_arr); $i++) {
+        my $wt=($$seq_arr[$i] eq "X" ? "A" : $$seq_arr[$i]);
         foreach my $aa (@amino_acids) {
-            push @mutants,$$seq_arr[$i] . ($i+1) . $aa unless $$seq_arr[$i] eq $aa;
+            push @mutants,$wt . ($i+1) . $aa unless $wt eq $aa;
         }
     }
     open MUT,">$workdir/$name.allmuts" or confess "Unable to write mutant file: $workdir/$name.allmuts";
     say MUT join "\n",@mutants;
     close MUT;
-    $$mut="$workdir/$name.allmuts";
 
     return @mutants;
 }
