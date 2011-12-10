@@ -202,11 +202,11 @@ foreach my $data_point (0..@predictions-1) {
         $non+=$$network[1];
         print OUT int(100*$$network[0]) ." ". int(100*$$network[1]) ."\t| " if $pc;
     }
-    say OUT "Sum = ". int(100*($neu-$non)/scalar(@{$predictions[0]})) if $pc;
+    say OUT "Sum = ". int(100*($non-$neu)/scalar(@{$predictions[0]})) if $pc;
     if ($labeled_muts_file){
         $prediction->add([$neu/10,$non/10],($labels[$data_point] == 1 ? [0,1] : [1,0]));
     }
-    my $ri=$neu-$non;
+    my $ri=$non-$neu;
     say OUT $mutants[$data_point] . " => Prediction: " . ($ri>0 ? "Non-neutral" : "Neutral") . "\tReliability Index: " . int(abs($ri)) . "\tExpected accuracy: " . $expected_accuracy{int($ri)}; 
     
 }
