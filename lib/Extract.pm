@@ -17,9 +17,9 @@ sub all{
     my $seqlength=length($main::sequence); 
     my $pssm=new Pssmparser("$workdir/$main::name.blastPsiMat");
     my $psic=new Psicparser("$workdir/$main::name.psic");
-    my $isis=new Isisparser("$workdir/$main::name.isis");
-    my $disis=new Disisparser("$workdir/$main::name.disis");
-    my $md=new Mdparser("$workdir/$main::name.mdisorder");
+    #my $isis=new Isisparser("$workdir/$main::name.isis");
+    #my $disis=new Disisparser("$workdir/$main::name.disis");
+    #my $md=new Mdparser("$workdir/$main::name.mdisorder");
     my $prof=new Profparser("$workdir/$main::name.reprof");
     my $swiss=new Swissparser("$workdir/$main::name.blastswiss",$main::swiss_dat,$main::db_swiss);
     my $profbval=new Profbvalparser("$workdir/$main::name.profbval");

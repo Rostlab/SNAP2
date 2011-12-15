@@ -229,7 +229,7 @@ sub allmuts{
     my @mutants;
     my @amino_acids=qw( A R N D C Q E G H I L K M F P S T W Y V );
     for (my $i = 0; $i < scalar(@$seq_arr); $i++) {
-        my $wt=($$seq_arr[$i] eq "X" ? "A" : $$seq_arr[$i]);
+        my $wt=($$seq_arr[$i]!~/[ARNDCQEGHILKMFPSTWYV]/o ? "A" : $$seq_arr[$i]);
         foreach my $aa (@amino_acids) {
             push @mutants,$wt . ($i+1) . $aa unless $wt eq $aa;
         }
