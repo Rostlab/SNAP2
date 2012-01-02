@@ -94,7 +94,7 @@ sub reprof{
    my $prof=$main::config->val('snap2','reprof_exe');
 
    unless (-e "$workdir/$main::name.reprof"){
-       my $cmd = "$prof -b $workdir/$main::name.blastPsiMat -o $workdir/$main::name.reprof -mutations $muts";
+       my $cmd = "$prof -b $workdir/$main::name.blastPsiMat -o $workdir/$main::name.reprof -mutations $muts".($debug ? '' : '>/dev/null 2>&1');
        cluck $cmd if $debug;
         system ($cmd) &&  confess "'$cmd' failed: ".($?>>8);
    } 

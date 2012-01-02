@@ -19,7 +19,7 @@ BEGIN {
     my ( $defaultconfig, $etcconfig );
     if( -e "__pkgdatadir__/snap2rc.default" ) { $defaultconfig = Config::IniFiles->new( -file => "__pkgdatadir__/snap2rc.default" ); }
     if( -e "__sysconfdir__/snap2rc" ) { $etcconfig = Config::IniFiles->new( -file => "__sysconfdir__/snap2rc", -import => $defaultconfig ); } else { $etcconfig = $defaultconfig; }
-    if( ( $ENV{SNAP2CONF} && -e "$ENV{SNAP2CONF}" ) || -e "$ENV{HOME}/.snap2rc" ) { $config = Config::IniFiles->new( -file => $ENV{SNAPFUNCONF} || "$ENV{HOME}/.snap2rc", -import => $etcconfig ); } else { $config = $etcconfig; }
+    if( ( $ENV{SNAP2CONF} && -e "$ENV{SNAP2CONF}" ) || -e "$ENV{HOME}/.snap2rc" ) { $config = Config::IniFiles->new( -file => $ENV{SNAP2CONF} || "$ENV{HOME}/.snap2rc", -import => $etcconfig ); } else { $config = $etcconfig; }
 
     #$config=Config::IniFiles->new( -file => "/mnt/project/resnap/build/trunk/snap2rc.default");
     $snap2dir = $config->val('snap2', 'snap2dir');
@@ -28,12 +28,11 @@ BEGIN {
     $db_swiss=$config->val('data','db_swiss');
     $big80=$config->val('blast','big80');
     $phat_matrix=$config->val('data','phat_matrix');
-    $fannlib=$config->val('snap2','fann_lib');
+    #$fannlib=$config->val('snap2','fann_lib');
     $cpu=$config->val('snap2', 'blastpgp_processors');
 }
 
 use lib glob( "$snap2dir/lib" );
-use lib glob( $fannlib );
 use Run;
 use Extract;
 use Predict;
