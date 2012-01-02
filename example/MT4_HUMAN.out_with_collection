@@ -1,0 +1,6 @@
+C30Y => 14 85	| 17 82	| 14 85	| 17 82	| 14 85	| 9 90	| 10 89	| 29 70	| 20 79	| 14 85	| Sum = 67
+C30Y => Prediction: Non-neutral	Reliability Index: 6	Expected accuracy: 80%
+R31W => 12 87	| 12 87	| 14 85	| 13 86	| 11 88	| 8 91	| 9 90	| 20 79	| 20 79	| 13 86	| Sum = 72
+R31W => Prediction: Non-neutral	Reliability Index: 7	Expected accuracy: 85%
+G48D => 7 92	| 8 91	| 18 81	| 11 88	| 7 92	| 5 94	| 5 94	| 13 86	| 11 88	| 9 90	| Sum = 80
+G48D => Prediction: Non-neutral	Reliability Index: 8	Expected accuracy: 91%

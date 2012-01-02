@@ -16,12 +16,12 @@ BEGIN {
     our $VERSION = "__VERSION__";
     $version=$VERSION;
 
-    #my ( $defaultconfig, $etcconfig );
-    #if( -e "__pkgdatadir__/snap2rc.default" ) { $defaultconfig = Config::IniFiles->new( -file => "__pkgdatadir__/snap2rc.default" ); }
-    #if( -e "__sysconfdir__/snap2rc" ) { $etcconfig = Config::IniFiles->new( -file => "__sysconfdir__/snap2rc", -import => $defaultconfig ); } else { $etcconfig = $defaultconfig; }
-    #if( ( $ENV{SNAP2CONF} && -e "$ENV{SNAP2CONF}" ) || -e "$ENV{HOME}/.snap2rc" ) { $config = Config::IniFiles->new( -file => $ENV{SNAPFUNCONF} || "$ENV{HOME}/.snap2rc", -import => $etcconfig ); } else { $config = $etcconfig; }
+    my ( $defaultconfig, $etcconfig );
+    if( -e "__pkgdatadir__/snap2rc.default" ) { $defaultconfig = Config::IniFiles->new( -file => "__pkgdatadir__/snap2rc.default" ); }
+    if( -e "__sysconfdir__/snap2rc" ) { $etcconfig = Config::IniFiles->new( -file => "__sysconfdir__/snap2rc", -import => $defaultconfig ); } else { $etcconfig = $defaultconfig; }
+    if( ( $ENV{SNAP2CONF} && -e "$ENV{SNAP2CONF}" ) || -e "$ENV{HOME}/.snap2rc" ) { $config = Config::IniFiles->new( -file => $ENV{SNAPFUNCONF} || "$ENV{HOME}/.snap2rc", -import => $etcconfig ); } else { $config = $etcconfig; }
 
-    $config=Config::IniFiles->new( -file => "/mnt/project/resnap/build/trunk/snap2rc.default");
+    #$config=Config::IniFiles->new( -file => "/mnt/project/resnap/build/trunk/snap2rc.default");
     $snap2dir = $config->val('snap2', 'snap2dir');
     $swissdb=$config->val('blast','swiss');
     $swiss_dat=$config->val('data','swiss_dat');

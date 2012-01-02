@@ -207,12 +207,12 @@ foreach my $data_point (0..@predictions-1) {
     
 }
 close OUT;
-
-if ($plot){
-    use lib glob ("$snap2dir/plots");
-    use Plot;
-    Plot::from_prediction($name,\@sequence_array,\@predictions,$out,$debug);
-}
+#Inbuild plotting function - Mhecht: currently disabled
+#if ($plot){
+#    use lib glob ("$snap2dir/plots");
+#    use Plot;
+#    Plot::from_prediction($name,\@sequence_array,\@predictions,$out,$debug);
+#}
 warn "\nOutput written to $out\n" unless $quiet;
 exit(0);
 
