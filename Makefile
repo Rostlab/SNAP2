@@ -128,14 +128,14 @@ DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /mnt/project/resnap/trunk/missing --run aclocal-1.11
-AMTAR = ${SHELL} /mnt/project/resnap/trunk/missing --run tar
-AUTOCONF = ${SHELL} /mnt/project/resnap/trunk/missing --run autoconf
-AUTOHEADER = ${SHELL} /mnt/project/resnap/trunk/missing --run autoheader
-AUTOMAKE = ${SHELL} /mnt/project/resnap/trunk/missing --run automake-1.11
+ACLOCAL = ${SHELL} /mnt/home/lkajan/project/rostlab/DEBIAN/snap2/missing --run aclocal-1.11
+AMTAR = ${SHELL} /mnt/home/lkajan/project/rostlab/DEBIAN/snap2/missing --run tar
+AUTOCONF = ${SHELL} /mnt/home/lkajan/project/rostlab/DEBIAN/snap2/missing --run autoconf
+AUTOHEADER = ${SHELL} /mnt/home/lkajan/project/rostlab/DEBIAN/snap2/missing --run autoheader
+AUTOMAKE = ${SHELL} /mnt/home/lkajan/project/rostlab/DEBIAN/snap2/missing --run automake-1.11
 AWK = gawk
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"snap2\" -DPACKAGE_TARNAME=\"snap2\" -DPACKAGE_VERSION=\"1.00\" -DPACKAGE_STRING=\"snap2\ 1.00\" -DPACKAGE_BUGREPORT=\"hecht@rostlab.org\" -DPACKAGE_URL=\"\" -DPACKAGE=\"snap2\" -DVERSION=\"1.00\"
+DEFS = -DPACKAGE_NAME=\"snap2\" -DPACKAGE_TARNAME=\"snap2\" -DPACKAGE_VERSION=\"1.0.0\" -DPACKAGE_STRING=\"snap2\ 1.0.0\" -DPACKAGE_BUGREPORT=\"hecht@rostlab.org\" -DPACKAGE_URL=\"\" -DPACKAGE=\"snap2\" -DVERSION=\"1.0.0\"
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
@@ -148,24 +148,24 @@ LIBOBJS =
 LIBS = 
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /mnt/project/resnap/trunk/missing --run makeinfo
+MAKEINFO = ${SHELL} /mnt/home/lkajan/project/rostlab/DEBIAN/snap2/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 PACKAGE = snap2
 PACKAGE_BUGREPORT = hecht@rostlab.org
 PACKAGE_NAME = snap2
-PACKAGE_STRING = snap2 1.00
+PACKAGE_STRING = snap2 1.0.0
 PACKAGE_TARNAME = snap2
 PACKAGE_URL = 
-PACKAGE_VERSION = 1.00
+PACKAGE_VERSION = 1.0.0
 PATH_SEPARATOR = :
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = 
-VERSION = 1.00
-abs_builddir = /mnt/project/resnap/trunk
-abs_srcdir = /mnt/project/resnap/trunk
-abs_top_builddir = /mnt/project/resnap/trunk
-abs_top_srcdir = /mnt/project/resnap/trunk
+VERSION = 1.0.0
+abs_builddir = /mnt/home/lkajan/project/rostlab/DEBIAN/snap2
+abs_srcdir = /mnt/home/lkajan/project/rostlab/DEBIAN/snap2
+abs_top_builddir = /mnt/home/lkajan/project/rostlab/DEBIAN/snap2
+abs_top_srcdir = /mnt/home/lkajan/project/rostlab/DEBIAN/snap2
 am__leading_dot = .
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
@@ -181,7 +181,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /mnt/project/resnap/trunk/install-sh
+install_sh = ${SHELL} /mnt/home/lkajan/project/rostlab/DEBIAN/snap2/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -190,7 +190,7 @@ mandir = ${datarootdir}/man
 mkdir_p = /bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local
+prefix = /tmp/lkajan/root
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -201,7 +201,7 @@ target_alias =
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
-dist_bin_SCRIPTS = snap2 quicksnap
+dist_bin_SCRIPTS = snap2
 dist_pkgdata_DATA = \
 	phat.txt \
 	snap2rc.default
@@ -832,7 +832,6 @@ install-data-hook:
 
 install-exec-hook:
 	sed -i -e 's|__datadir__|$(datadir)|g;s|__docdir__|$(docdir)|g;s|__pkgdatadir__|$(pkgdatadir)|g;s|__PREFIX__|$(prefix)|g;s|__sysconfdir__|$(sysconfdir)|g;s|__VERSION__|$(VERSION)|g;' "$(DESTDIR)$(bindir)/snap2"
-	sed -i -e 's|__datadir__|$(datadir)|g;s|__docdir__|$(docdir)|g;s|__pkgdatadir__|$(pkgdatadir)|g;s|__PREFIX__|$(prefix)|g;s|__sysconfdir__|$(sysconfdir)|g;s|__VERSION__|$(VERSION)|g;' "$(DESTDIR)$(bindir)/quicksnap"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -11,8 +11,6 @@ sift_exe=__bindir__/sift_for_submitting_fasta_seq.csh
 reprof_exe=__bindir__/reprof
 #blast executable
 blast_exe=__bindir__/blastpgp
-#fann lib
-fann_lib=
 
 [data]
 # swiss_dat=path - location of UniProt/Swiss-Prot dat file

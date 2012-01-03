@@ -1,4 +1,4 @@
-dist_bin_SCRIPTS = snap2 quicksnap
+dist_bin_SCRIPTS = snap2
 dist_pkgdata_DATA = \
 	phat.txt \
 	snap2rc.default
@@ -6,7 +6,7 @@ dist_pkgdata_DATA = \
 docdir = $(datadir)/doc/$(PACKAGE)
 dist_doc_DATA = AUTHORS README
 
-SUBDIRS = example models lib quick
+SUBDIRS = example models lib
 
 man_MANS = snap2.1
 
@@ -28,4 +28,3 @@ install-data-hook:
 
 install-exec-hook:
 	sed -i -e 's|__datadir__|$(datadir)|g;s|__docdir__|$(docdir)|g;s|__pkgdatadir__|$(pkgdatadir)|g;s|__PREFIX__|$(prefix)|g;s|__sysconfdir__|$(sysconfdir)|g;s|__VERSION__|$(VERSION)|g;' "$(DESTDIR)$(bindir)/snap2"
-	sed -i -e 's|__datadir__|$(datadir)|g;s|__docdir__|$(docdir)|g;s|__pkgdatadir__|$(pkgdatadir)|g;s|__PREFIX__|$(prefix)|g;s|__sysconfdir__|$(sysconfdir)|g;s|__VERSION__|$(VERSION)|g;' "$(DESTDIR)$(bindir)/quicksnap"
