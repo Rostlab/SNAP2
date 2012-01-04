@@ -21,14 +21,12 @@ BEGIN {
     if( -e "__sysconfdir__/snap2rc" ) { $etcconfig = Config::IniFiles->new( -file => "__sysconfdir__/snap2rc", -import => $defaultconfig ); } else { $etcconfig = $defaultconfig; }
     if( ( $ENV{SNAP2CONF} && -e "$ENV{SNAP2CONF}" ) || -e "$ENV{HOME}/.snap2rc" ) { $config = Config::IniFiles->new( -file => $ENV{SNAP2CONF} || "$ENV{HOME}/.snap2rc", -import => $etcconfig ); } else { $config = $etcconfig; }
 
-    #$config=Config::IniFiles->new( -file => "/mnt/project/resnap/build/trunk/snap2rc.default");
     $snap2dir = $config->val('snap2', 'snap2dir');
     $swissdb=$config->val('blast','swiss');
     $swiss_dat=$config->val('data','swiss_dat');
     $db_swiss=$config->val('data','db_swiss');
     $big80=$config->val('blast','big80');
     $phat_matrix=$config->val('data','phat_matrix');
-    #$fannlib=$config->val('snap2','fann_lib');
     $cpu=$config->val('snap2', 'blastpgp_processors');
 }
 
