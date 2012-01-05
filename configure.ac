@@ -5,7 +5,7 @@ AC_PROG_LN_S
 
 AM_INIT_AUTOMAKE
 AC_CONFIG_FILES([Makefile
-                 example/Makefile
+                 examples/Makefile
                  lib/Makefile
                  models/Makefile
 		])

@@ -6,7 +6,7 @@ dist_pkgdata_DATA = \
 docdir = $(datadir)/doc/$(PACKAGE)
 dist_doc_DATA = AUTHORS README
 
-SUBDIRS = example models lib
+SUBDIRS = examples models lib
 
 man_MANS = snap2.1
 

@@ -9,7 +9,9 @@ Homepage:  http://rostlab.org/
 
 Package: snap2
 Architecture: all
-Depends: ${perl:Depends}, ${misc:Depends}, reprof
+Depends: ${perl:Depends}, ${misc:Depends}, blast2, libai-fann-perl, libconfig-inifiles-perl, libfile-chdir-perl, predictprotein, reprof, rost-runpsic, sift
+Recommends: pp-popularity-contest
+Suggests: librg-utils-perl
 Description: predictor for functional effect of non-synonymous SNPs
  SNAP2 is neural network based predictor for functional effects of
  non-synonymous single nucleotide polymorphisms (nsSNP).

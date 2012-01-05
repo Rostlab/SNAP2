@@ -2188,7 +2188,7 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 
-ac_config_files="$ac_config_files Makefile example/Makefile lib/Makefile models/Makefile"
+ac_config_files="$ac_config_files Makefile examples/Makefile lib/Makefile models/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -2900,7 +2900,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "example/Makefile") CONFIG_FILES="$CONFIG_FILES example/Makefile" ;;
+    "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
     "models/Makefile") CONFIG_FILES="$CONFIG_FILES models/Makefile" ;;
 

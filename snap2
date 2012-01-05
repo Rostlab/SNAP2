@@ -36,6 +36,9 @@ use Extract;
 use Predict;
 use Prediction;
 
+# popularity contest
+if( system('pp_popcon_cnt', '-p', 'snap2') == -1 ){ warn("The Rost Lab recommends you install the pp-popularity-contest package that provides pp_popcon_cnt:\n\nsudo apt-get install pp-popularity-contest\n"); }
+
 my($in,$out,$mut,$workdir,$plot,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs,$print_version,$help);
 my $debug=0;
 $cpu=1;
@@ -265,7 +268,7 @@ SNAP is a neural-network based method that uses in silico derived protein inform
 
 =head2 Output format
 
-Self-annotating, see example outputs in F<__pkgdatadir__/example>.  No output for mutations below minimum reliability or expected accuracy but see B<--print-collection>.
+Self-annotating, see example outputs in F<__docdir__/examples>.  No output for mutations below minimum reliability or expected accuracy but see B<--print-collection>.
 
 Value ranges in output:
 
@@ -351,9 +354,9 @@ Print outputs of each of the snap2 predictions against the 10 models - these are
 
 =head1 EXAMPLES
 
-C<snap2 -i __pkgdatadir__/example/MT4_HUMAN.fasta -m __pkgdatadir__/example/MT4_HUMAN.muts -o MT4_HUMAN.snap2>
+C<snap2 -i __docdir__/examples/MT4_HUMAN.fasta -m __docdir__/examples/MT4_HUMAN.muts -o MT4_HUMAN.snap2>
 
-C<snap2 -i __pkgdatadir__/example/MT4_HUMAN.fasta -m all -o MT4_HUMAN.snap2>
+C<snap2 -i __docdir__/examples/MT4_HUMAN.fasta -m all -o MT4_HUMAN.snap2>
 
 =head1 BUGS
 

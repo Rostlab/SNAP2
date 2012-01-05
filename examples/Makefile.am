@@ -1,2 +1,2 @@
-pkgdataexampledir = $(pkgdatadir)/example
-dist_pkgdataexample_DATA = $(srcdir)/MT4_HUMAN.*
+pkgdocexamplesdir = ${datarootdir}/doc/${PACKAGE}/examples
+dist_pkgdocexamples_DATA = $(srcdir)/MT4_HUMAN.*
