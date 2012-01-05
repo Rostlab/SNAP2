@@ -1,0 +1,25 @@
+This work was packaged for Debian by:
+
+    Maximilian Hecht <hecht@rostlab.org> on Wed, 04 Jan 2012 11:38:13 +0100
+
+Copyright:
+
+    Copyright (C) 2012 Maximilian Hecht, Technical University of Munich, Germany
+
+License:
+
+    This program is licensed under the terms of the ACADEMIC SOFTWARE LICENSE
+    AGREEMENT FOR END-USERS AT PUBLICLY FUNDED ACADEMIC, EDUCATION OR RESEARCH
+    INSTITUTIONS.
+
+    You should have received a copy of the ACADEMIC SOFTWARE LICENSE AGREEMENT
+    FOR END-USERS AT PUBLICLY FUNDED ACADEMIC, EDUCATION OR RESEARCH
+    INSTITUTIONS along with this program.  If not, see
+    L<https://rostlab.org/owiki/index.php/Academic_Software_License_Agreement>.
+
+The Debian packaging is:
+
+    Copyright (C) 2012 Maximilian Hecht <hecht@rostlab.org>
+
+and is licensed under the GPL version 3,
+see "/usr/share/common-licenses/GPL-3".

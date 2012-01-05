@@ -207,7 +207,7 @@ dist_pkgdata_DATA = \
 	snap2rc.default
 
 dist_doc_DATA = AUTHORS README
-SUBDIRS = example models lib quick
+SUBDIRS = example models lib
 man_MANS = snap2.1
 all: all-recursive
 

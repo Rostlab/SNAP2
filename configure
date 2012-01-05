@@ -2188,7 +2188,7 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 
-ac_config_files="$ac_config_files Makefile example/Makefile lib/Makefile models/Makefile quick/Makefile"
+ac_config_files="$ac_config_files Makefile example/Makefile lib/Makefile models/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -2903,7 +2903,6 @@ do
     "example/Makefile") CONFIG_FILES="$CONFIG_FILES example/Makefile" ;;
     "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
     "models/Makefile") CONFIG_FILES="$CONFIG_FILES models/Makefile" ;;
-    "quick/Makefile") CONFIG_FILES="$CONFIG_FILES quick/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5 ;;
   esac

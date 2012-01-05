@@ -1,0 +1,24 @@
+Source: snap2
+Section: science
+Priority: extra
+Maintainer: Maximilian Hecht <hecht@rostlab.org>
+Uploaders: Laszlo Kajan <lkajan@rostlab.org>
+Build-Depends: debhelper (>= 7.0.50~), autotools-dev
+Standards-Version: 3.9.2
+Homepage:  http://rostlab.org/
+
+Package: snap2
+Architecture: all
+Depends: ${perl:Depends}, ${misc:Depends}, reprof
+Description: predictor for functional effect of non-synonymous SNPs
+ SNAP2 is neural network based predictor for functional effects of
+ non-synonymous single nucleotide polymorphisms (nsSNP).
+ It is capable of classifying the effect SNPs in proteins of all kingdoms into
+ either neutral or non-neutral.
+ The 10-fold cross-validation on a mixed data set of 80.000 mutants showed
+ that accuracy and coverage for both neutral and non-neutral substitutions
+ is approximately 80%.
+ This tool is especially optimized towards predicting all possible mutations
+ in a protein (i.e. substituting each position by all 19 non-native amino
+ acids). Benchmarking results suggest an average runtime of 60 min for a
+ complete mutagenesis experiment.
