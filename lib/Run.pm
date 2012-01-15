@@ -8,23 +8,22 @@ use File::chdir;
 use ForkManager;
 
 sub all{
-    my ($muts,$workdir,$fcs,$cpu,$allmuts,$debug)=@_;
-    my ($cmd,$fasta);
+    my ($muts,$workdir,$fcs,$cpu,$debug)=@_;
+    my $fasta=$main::fasta_file;
     my $sequence=$main::sequence;
     my $name=$main::name;
 
-    #transform input into fasta sequence
-    $fasta="$workdir/$name.fasta";
-    open (FHOUT,">$fasta") or confess "\nError: unable to write fasta file: $fasta\n";
-    print FHOUT printFasta($name,$sequence);
-    close FHOUT;
-
     #call predictprotein to retrieve MD, PSIC, BLAST PSSM, PROF, ISIS, DISIS
-    predictprotein($workdir,$fasta,$fcs,$cpu,$debug);
+    if ($main::use_pp == 1){
+        predictprotein($workdir,$fasta,$fcs,$cpu,$debug);
+    }
+    else {
+        #todo run blast,psic,profbval(,isis,disis,md)
+    }
 
     #secondary structure prediction of mutants with prof
     if ($cpu>1){
-        my @mutlist=splitmuts(\@main::mutants,$cpu,$workdir,$debug);
+        my @mutlist=splitmuts(\@main::todo,$cpu,$workdir,$debug);
         my $pm=new ForkManager($cpu);
         foreach my $mut (@mutlist) {
             $pm->start and next;
@@ -119,46 +118,43 @@ sub predictprotein{
         "--target=query.mdisorder",
         "--blast-processors=$blast_processors");
     push @cmd,"--force-cache-store" if $fcs;
+    push @cmd,"--workdir=$workdir" unless $main::use_pp_cache;
     cluck(@cmd) if $debug;
     system(@cmd) && confess "Failed to execute '@cmd': ".($?>>8);
 
-    open( my $ph, '-|', 'ppc_fetch', '--seqfile', "$workdir/$main::name.fasta" ) || confess( "failed to open pipe: $!" );
+    if ($main::use_pp_cache){
+        open( my $ph, '-|', 'ppc_fetch', '--seqfile', "$workdir/$main::name.fasta" ) || confess( "failed to open pipe: $!" );
         my ( $ppc_fetch_baseline ) = grep( /.in$/o, <$ph> ); 
         confess("no .in file in cache for sequence '$workdir/$main::name.fasta'") unless $ppc_fetch_baseline; 
-    if( !close( $ph ) ){
-        if( $! == 0 && ( $? >> 8 ) == 254 ){ 
-            confess("no results in cache for sequence '$workdir/$main::name.fasta'"); 
-        } 
-        else { 
-            confess( "failed to close pipe: $!" ); 
-        } 
-    }
-    chomp( $ppc_fetch_baseline );
-    $ppc_fetch_baseline =~ s/in$//o;
-    my @fetch;
-    push @fetch,$ppc_fetch_baseline."disis";
-    push @fetch,$ppc_fetch_baseline."blastPsiMat";
-    push @fetch,$ppc_fetch_baseline."psic";
-    push @fetch,$ppc_fetch_baseline."isis";
-    push @fetch,$ppc_fetch_baseline."prof1Rdb";
-    push @fetch,$ppc_fetch_baseline."profRdb";
-    push @fetch,$ppc_fetch_baseline."mdisorder";
-    push @fetch,$ppc_fetch_baseline."profbval"; 
-    foreach my $file (@fetch) {
-        my ($fname,$base,$ext)=fileparse($file,qr/\.[^.]*/);
-        my @cmd=("cp","$file","$workdir/$main::name"."$ext");
-        cluck(@cmd) if $debug;
-        system(@cmd) && confess "Failed to execute '@cmd': ".($?>>8);
+        if( !close( $ph ) ){
+            if( $! == 0 && ( $? >> 8 ) == 254 ){ 
+                confess("no results in cache for sequence '$workdir/$main::name.fasta'"); 
+            } 
+            else { 
+                confess( "failed to close pipe: $!" ); 
+            } 
+        }
+        chomp( $ppc_fetch_baseline );
+        $ppc_fetch_baseline =~ s/in$//o;
+        my @fetch;
+        push @fetch,$ppc_fetch_baseline."disis";
+        push @fetch,$ppc_fetch_baseline."blastPsiMat";
+        push @fetch,$ppc_fetch_baseline."psic";
+        push @fetch,$ppc_fetch_baseline."isis";
+        push @fetch,$ppc_fetch_baseline."prof1Rdb";
+        push @fetch,$ppc_fetch_baseline."profRdb";
+        push @fetch,$ppc_fetch_baseline."mdisorder";
+        push @fetch,$ppc_fetch_baseline."profbval"; 
+        foreach my $file (@fetch) {
+            my ($fname,$base,$ext)=fileparse($file,qr/\.[^.]*/);
+            my @cmd=("cp","$file","$workdir/$main::name"."$ext");
+            cluck(@cmd) if $debug;
+            system(@cmd) && confess "Failed to execute '@cmd': ".($?>>8);
+        }
     }
 
 }
 
-sub printFasta{
-    my ($name,$seq)=@_;
-    $seq=~s/([A-Z]{60})/$1\n/g;
-    my $out=">$name\n";
-    return $out.$seq."\n";
-}
 
 sub splitmuts{
     my ($muts,$cpus,$workdir,$debug)=@_;

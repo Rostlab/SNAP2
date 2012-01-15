@@ -35,10 +35,10 @@ sub all{
     my @protlength=Features::protein_length($seqlength,$debug);
 
     #Loop over all mutants and extract all features
-    foreach my $i (0..@main::mutants-1){
+    foreach my $i (0..@main::todo-1){
         my @features;
         #split mutation A36D into wildtype, position, mutant: 'A', '36', 'D'
-        my ($wt,$pos,$mut)=Features::wt_pos_mut($main::mutants[$i],$debug);
+        my ($wt,$pos,$mut)=Features::wt_pos_mut($main::todo[$i],$debug);
 
         #Global Features
         push @features,@aacomp,@acccomp,@seccomp,@protlength;
@@ -66,11 +66,11 @@ sub all{
         push @features,Features::psicDiff($wt,$pos,$mut,\$psic,$debug);
         #push @features,Features::indexDiff($wt,$mut,'vol',$debug);
         #push @features,Features::indexDiff($wt,$mut,'charge',$debug);
-        #push @features,Features::profDiff($wt,$pos,$mut,"$workdir/$main::name.reprof_$main::mutants[$i]",\$oriprof,$debug);
+        #push @features,Features::profDiff($wt,$pos,$mut,"$workdir/$main::name.reprof_$main::todo[$i]",\$oriprof,$debug);
 
         #Mutation based features
         push @features,Features::swiss($wt,$pos,$mut,\$swiss,$main::phat_matrix,$debug);
-        push @features,Features::sift("$workdir/$main::name.SIFTprediction",$main::mutants[$i],$debug);
+        push @features,Features::sift("$workdir/$main::name.SIFTprediction",$main::todo[$i],$debug);
         push @features,Features::residue_representation($mut,$debug);
 
         #Additional indices from quicksnap
@@ -87,7 +87,7 @@ sub all{
         #push @features,Features::potentials($seqlength,$pos,\@main::sequence_array,9,$mut,$debug);
         push @features,Features::potentialDiff($seqlength,$pos,\@main::sequence_array,9,$wt,$mut,$debug);
         push @features,Features::potentialProfileDiff($wt,$mut,$debug);
-        #push @features,Features::qsnap_pred(\$snap,$main::mutants[$i],$debug);
+        #push @features,Features::qsnap_pred(\$snap,$main::todo[$i],$debug);
         #push @features,Features::qsnap_avg(\$snap,$pos,5,$seqlength,$debug);
         
         #append to data array
@@ -108,11 +108,11 @@ sub quick{
     my @protlength=Features::protein_length($seqlength,$debug);
 
     #Loop over all mutants and extract all features
-    foreach my $i (0..@main::mutants-1){
+    foreach my $i (0..@main::todo-1){
         my @features;
         
         #split mutation A36D into wildtype, position, mutant: 'A', '36', 'D'
-        my ($wt,$pos,$mut)=Features::wt_pos_mut($main::mutants[$i],$debug);
+        my ($wt,$pos,$mut)=Features::wt_pos_mut($main::todo[$i],$debug);
         
         #Global
         push @features,@aacomp,@protlength;

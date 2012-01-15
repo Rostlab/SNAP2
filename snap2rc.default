@@ -1,8 +1,20 @@
 [snap2]
 # snapfun_utildir=path - path to package utilities, default: __pkgdatadir__
 snap2dir=__pkgdatadir__
+#use snap cache [0|1], default: 1
+use_snap_cache=1
+#snap cache fetch executable
+snapc_fetch=__bindir__/snapc_fetch
+#snap cache store executable
+snapc_store=__bindir__/snapc_store
+#snap cache root - overrides snap-cache-mgr configuration
+#snapc_root=
 # blastpgp_processors
 blastpgp_processors=1
+#use predictprotein [0|1], default: 1
+use_pp=1
+#use predictprotein cache, requires use_pp=1, default: 1
+use_pp_cache=1
 #predictprotein executable
 pp_exe=__bindir__/predictprotein
 #sift executable
@@ -11,6 +23,7 @@ sift_exe=__bindir__/sift_for_submitting_fasta_seq.csh
 reprof_exe=__bindir__/reprof
 #blast executable
 blast_exe=__bindir__/blastpgp
+
 
 [data]
 # swiss_dat=path - location of UniProt/Swiss-Prot dat file

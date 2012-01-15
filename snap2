@@ -9,7 +9,7 @@ use File::Basename;
 use File::Path qw(make_path);
 use Carp qw(cluck :DEFAULT);
 
-our ($allmuts,$config,$sequence,@mutants,$name,@sequence_array,$swissdb,$db_swiss,$swiss_dat,$big80,$phat_matrix);
+our ($use_pp,$use_pp_cache,$use_snap_cache,$allmuts,$config,$sequence,@mutants,$name,@sequence_array,$swissdb,$db_swiss,$swiss_dat,$big80,$phat_matrix,@todo);
 my ($version,$snap2dir,$fannlib,$cpu);
 BEGIN {
     use Config::IniFiles;
@@ -28,6 +28,9 @@ BEGIN {
     $big80=$config->val('blast','big80');
     $phat_matrix=$config->val('data','phat_matrix');
     $cpu=$config->val('snap2', 'blastpgp_processors');
+    $use_pp=$config->val('snap2', 'use_pp');
+    $use_pp_cache=$config->val('snap2', 'use_pp_cache');
+    $use_snap_cache=$config->val('snap2', 'use_snap_cache');
 }
 
 use lib glob( "$snap2dir/lib" );
@@ -39,8 +42,9 @@ use Prediction;
 # popularity contest
 if( system('pp_popcon_cnt', '-p', 'snap2') == -1 ){ warn("The Rost Lab recommends you install the pp-popularity-contest package that provides pp_popcon_cnt:\n\nsudo apt-get install pp-popularity-contest\n"); }
 
-my($in,$out,$mut,$workdir,$plot,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs,$print_version,$help);
+my($in,$out,$mut,$snap_cache,%snap_cache_results,%predictions,$workdir,$plot,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs,$print_version,$help);
 my $debug=0;
+my $threshold=10;
 $cpu=1;
 my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'out=s'    =>  \$out,
@@ -55,34 +59,19 @@ my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'cpus=i' => \$cpu,
                         'plot'  => \$plot,
                         'version' => \$print_version,
-                        'help' => \$help
+                        'help' => \$help,
+                        'threshold=i' => \$threshold,
+                        'use-snap-cache!' => \$use_snap_cache
 );
 (say $version and exit(0)) if $print_version;
 die_usage("Please read the man page for more detailed information") if $help;
-sub die_usage{
-    my $msg=shift;
-    say "\nDESCRIPTION:\nPredict functional effect of non-synonymous single nucleotide polymorphisms";
-    say "\nUSAGE:\nsnap2 -i <input fasta> -o <output file> -m <mutations file> [OPTIONS]";
-    say "\nMANDATORY:";
-    say "-i, --in <file>\n\tInput sequence in fasta format";
-    say "\n-m, --mut <file>\n\tMutation file in format: [A-Z][0-9]+[A-Z] e.g: 'A32S'. One per line";
-    say "\n-o, --out <file>\n\tOutput file";
-    say "\nOPTIONS:";
-    say "-w, --workdir <directory>\n\tWorking directory. Intermediate files will be saved here";
-    say "\n-l, --labels <file>\n\tMutation file with labels in format: [A-Z][0-9]+[A-Z]".'\s'."[0|1] e.g: 'A32S 1' (where 1 = non-neutral, 0 = neutral). One per line";
-    say "\n-e, --extract\n\tOnly extract feature values. Will be saved to <out file>.features";
-    say "\n-p, --print-collections\n\tAlso print the raw outputs for each network";
-    say "\n-q, --quiet\n\tSilence announcements";
-    say "\n-d, --debug\n\tPrint debugging messages. Use twice to increase level of debugging messages";
-    say "\n-c, --cpus\n\tNumber of cpu cores";
-    die "\n$msg\n";
-}
 die_usage("No input file defined") unless $in;
 die_usage("No output file defined") unless $out;
 die_usage("Unknown argument") unless $args_ok;
 
 if ($workdir){
     $workdir=Cwd::realpath( $workdir );
+    $use_snap_cache=0; #don't use cache lookup if workdir is given
 }
 else {
     $workdir=File::Temp::tempdir( CLEANUP=> !$debug);
@@ -103,8 +92,11 @@ while (<FHIN>){
     chomp($_);
     $sequence.=$_;
 }
-$sequence=~s/\s//g;
 close FHIN;
+$sequence=~s/\s//g;
+    
+#transform input into fasta sequence
+our $fasta_file=printFasta($workdir,$name,$sequence);
 
 #sequence as array
 @sequence_array=split(//o,$sequence);
@@ -150,9 +142,27 @@ else {
     die_usage("No mutation file defined");
 }
 
+#Look for pre-computed results
+if ($use_snap_cache && !$only_extract){
+    use Cache;
+    warn "\nLooking for cache results..\n" unless $quiet;
+    $snap_cache= new Cache($fasta_file,\@mutants,$mut,$debug);
+    %snap_cache_results=$snap_cache->results();
+    @todo=$snap_cache->todo();
+    my $todomuts="$workdir/$name.todo";
+    open (TODO,">$todomuts") or confess "\nError: failed to write file: $todomuts\n";
+    print TODO join ("\n",@todo);
+    close TODO;
+    $mut=$todomuts;
+}
+else {
+    @todo=@mutants;
+}
+write_output($out,\@mutants,\%predictions,\%snap_cache_results,$debug) && exit(0) unless @todo;
+
 #Run all external programs
 warn "\nRunning external programs..\n" unless $quiet;
-Run::all($mut,$workdir,$fcs,$cpu,$allmuts,$debug);
+Run::all($mut,$workdir,$fcs,$cpu,$debug);
 
 #Extract feature values
 warn "\nExtracting feature values..\n" unless $quiet;
@@ -172,8 +182,8 @@ exit(0) if $only_extract;
 
 #Run all the neural networks
 warn "\nRunning predictions..\n" unless $quiet;
-my @predictions=Predict::all($data,"$snap2dir/models",$debug>1 ? 1 : 0);
-confess "Number of predictions is not consistent with number of data points" if scalar(@predictions) != scalar(@$data);
+my %raw_pred=Predict::all($data,"$snap2dir/models",$debug>1 ? 1 : 0);
+confess "Number of predictions is not consistent with number of data points" if scalar(keys %raw_pred) != scalar(@todo);
 
 #Expected accuracy as obtained from 10-fold cross-validation
 my %expected_accuracy=( -9 => '97%',
@@ -196,35 +206,37 @@ my %expected_accuracy=( -9 => '97%',
                          8 => '91%',
                          9 => '95%');
 
+%predictions = &format(\@todo,\%raw_pred);
+write_output($out,\@mutants,\%predictions,\%snap_cache_results,$debug);
+$snap_cache->store(\%predictions,$fasta_file,$debug) if ($use_snap_cache);
+exit(0);
 #Write output file
-my $prediction=new Prediction();
-open OUT,">$out" or confess "Unable to write output file: $out";
-foreach my $data_point (0..@predictions-1) {
-    my ($neu,$non)=qw(0 0);
-    print OUT $mutants[$data_point] . " => " if $pc;
-    foreach my $network (@{$predictions[$data_point]}) {
-        $neu+=$$network[0];
-        $non+=$$network[1];
-        print OUT int(100*$$network[0]) ." ". int(100*$$network[1]) ."\t| " if $pc;
-    }
-    say OUT "Sum = ". int(100*($non-$neu)/scalar(@{$predictions[0]})) if $pc;
-    if ($labeled_muts_file){
-        $prediction->add([$neu/10,$non/10],($labels[$data_point] == 1 ? [0,1] : [1,0]));
-    }
-    my $ri=$non-$neu;
-    say OUT $mutants[$data_point] . " => Prediction: " . ($ri>0 ? "Non-neutral" : "Neutral") . "\tReliability Index: " . int(abs($ri)) . "\tExpected accuracy: " . $expected_accuracy{int($ri)}; 
-    
-}
-close OUT;
-$prediction->write("$out.labeledpred") if $labeled_muts_file;
+#my $prediction=new Prediction();
+#open OUT,">$out" or confess "Unable to write output file: $out";
+#foreach my $data_point (0..@predictions-1) {
+#    my ($neu,$non)=qw(0 0);
+#    print OUT $mutants[$data_point] . " => " if $pc;
+#    foreach my $network (@{$predictions[$data_point]}) {
+#        $neu+=$$network[0];
+#        $non+=$$network[1];
+#        print OUT int(100*$$network[0]) ." ". int(100*$$network[1]) ."\t| " if $pc;
+#    }
+#    say OUT "Sum = ". int(100*($non-$neu)/scalar(@{$predictions[0]})) if $pc;
+#    if ($labeled_muts_file){
+#        $prediction->add([$neu/10,$non/10],($labels[$data_point] == 1 ? [0,1] : [1,0]));
+#    }
+#    my $ri=$non-$neu;
+#    say OUT $mutants[$data_point] . " => Prediction: " . ($ri>0 ? "Non-neutral" : "Neutral") . "\tReliability Index: " . int(abs($ri)) . "\tExpected accuracy: " . $expected_accuracy{int($ri)}; 
+#    
+#}
+#close OUT;
+#$prediction->write("$out.labeledpred") if $labeled_muts_file;
 #Inbuild plotting function - Mhecht: currently disabled
 #if ($plot){
 #    use lib glob ("$snap2dir/plots");
 #    use Plot;
 #    Plot::from_prediction($name,\@sequence_array,\@predictions,$out,$debug);
 #}
-warn "\nOutput written to $out\n" unless $quiet;
-exit(0);
 
 #--------------------------------------------------
 # Sub-routines 
@@ -245,6 +257,77 @@ sub allmuts{
     close MUT;
 
     return @mutants;
+}
+
+sub die_usage{
+    my $msg=shift;
+    say "\nDESCRIPTION:\nPredict functional effect of non-synonymous single nucleotide polymorphisms";
+    say "\nUSAGE:\nsnap2 -i <input fasta> -o <output file> -m <mutations file> [OPTIONS]";
+    say "\nMANDATORY:";
+    say "-i, --in <file>\n\tInput sequence in fasta format";
+    say "\n-m, --mut <file>\n\tMutation file in format: [A-Z][0-9]+[A-Z] e.g: 'A32S'. One per line";
+    say "\n-o, --out <file>\n\tOutput file";
+    say "\nOPTIONS:";
+    say "-w, --workdir <directory>\n\tWorking directory. Intermediate files will be saved here";
+    say "\n-l, --labels <file>\n\tMutation file with labels in format: [A-Z][0-9]+[A-Z]".'\s'."[0|1] e.g: 'A32S 1' (where 1 = non-neutral, 0 = neutral). One per line";
+    say "\n-e, --extract\n\tOnly extract feature values. Will be saved to <out file>.features";
+    say "\n-p, --print-collections\n\tAlso print the raw outputs for each network";
+    say "\n-q, --quiet\n\tSilence announcements";
+    say "\n-d, --debug\n\tPrint debugging messages. Use twice to increase level of debugging messages";
+    say "\n-c, --cpus\n\tNumber of cpu cores";
+    die "\n$msg\n";
+}
+
+sub printFasta{
+    my ($workdir,$name,$seq)=@_;
+    open (FHOUT,">$workdir/$name.fasta") or confess "\nError: unable to write fasta file: $workdir/$name.fasta\n";
+    $seq=~s/([A-Z]{60})/$1\n/g;
+    my $out=">$name\n";
+    print FHOUT $out.$seq."\n";
+    close FHOUT;
+    return "$workdir/$name.fasta";
+}
+
+sub format{
+    my ($todo,$predictions)=@_;
+    my %formatted;
+    foreach my $mutant (@$todo) {
+        my ($neu,$non)=qw(0 0);
+        $formatted{$mutant}=[];
+        $formatted{$mutant}->[0]="$mutant => ";
+
+        foreach my $network (@{$predictions->{$mutant}}) {
+            $neu+=$$network[0];
+            $non+=$$network[1];
+            $formatted{$mutant}->[0].=int(100*$$network[0]) ." ". int(100*$$network[1]) ."\t| ";
+        }
+        my $sum = int(100*($non-$neu)/scalar(@{$predictions->{$mutant}}));
+        $formatted{$mutant}->[0].="sum = $sum\n";
+        my $ri=$non-$neu;
+        $formatted{$mutant}->[1]="$mutant\t" . ($sum>$threshold ? "Non-neutral" : "Neutral") . "\t" . int(abs($ri)) . "\t" . $expected_accuracy{int($ri)} . "\n"; 
+    }
+    return %formatted;
+}
+sub write_output{
+    my ($out,$mutants,$predictions,$snap_cache_results,$debug)=@_;
+    open OUT,">$out" or confess "Unable to write output file: $out";
+    foreach my $mutant (@$mutants) {
+        if (defined $predictions->{$mutant}){#from prediction
+            print "From prediction: ".$predictions->{$mutant}->[0] if $debug;
+            print OUT $predictions->{$mutant}->[0];
+            print OUT $predictions->{$mutant}->[1] if $pc;
+        } 
+        elsif (defined $snap_cache_results->{$mutant}){ #from cache
+            print "From cache: " .$snap_cache_results->{$mutant}->[0] if $debug;  
+            print OUT $snap_cache_results->{$mutant}->[0];
+            print OUT $snap_cache_results->{$mutant}->[1] if $pc;
+        }
+        else{ #failed
+            warn "No prediction available for mutant: $mutant\nPlease file a bug report";
+        }
+    }
+    close OUT;
+    warn "\nOutput written to $out\n" unless $quiet;
 }
 __END__
 

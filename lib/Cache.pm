@@ -1,25 +1,27 @@
 package Cache;
 
 use strict;
-use Carp;
+use Carp qw(cluck :DEFAULT);
 use Data::Dumper;
 use feature qw(say);
 
 sub new{
-    my ($class)=@_;
+    my ($class,$seq,$muts,$mutfile,$dbg)=@_;
 
     my $self ={
         results => {},
-        muts => [],
+        #muts => [],
         todo => [],
         tostore => {}
     };
     bless $self, $class;
+    $self->retrieve($seq,$mutfile,$muts,$dbg);
     return $self;
 }
 sub retrieve{
-    my ($mutfile,$seqfile,$dbg)=@_;
-	my @cmd = ( 'snapc_fetch', '--seqfile', $seqfile, '--mutfile', $mutfile );
+    my ($self,$seqfile,$mutfile,$muts,$dbg)=@_;
+    my $snapc_fetch=$main::config->val('snap2','snapc_fetch');
+	my @cmd = ( $snapc_fetch, '--seqfile', $seqfile, '--mutfile', $mutfile );
 	if ($dbg) { cluck("@cmd"); }
 	open( my $fetchpipe, '-|', @cmd ) || confess( "failed to open pipe: $!" );
 	my $cachereturn = [ <$fetchpipe> ];
@@ -28,39 +30,41 @@ sub retrieve{
 		else { confess( "failed to close pipe '@cmd': $!" ); } 
 	}
 
-    for( my $ln = 0; $ln < @$cachereturn; $ln += 2 )
-    {
+    for( my $ln = 0; $ln < @$cachereturn; $ln += 2 ){
         #C30Y => 78 20 | 83 16 | 81 17 | 79 19 | 78 21 | 88 11 | 86 13 | 86 13 | 84 15 | 83 15 | sum = 66
         #C30Y    Non-neutral     6           93%
         if( $cachereturn->[$ln] !~ /^([A-Z]\d+[A-Z])/o ){ confess("unrecognized line from cache: '$cachereturn->[$ln]'"); }
 
-        $cacheresults->{$1} = [ $cachereturn->[$ln], $cachereturn->[$ln+1] ];
+        $self->{results}->{$1} = [ $cachereturn->[$ln], $cachereturn->[$ln+1] ];
     }
 
-	my @todomuts;
-	foreach my $singlemutant (@muts)
-    {
-	    if( !exists( $cacheresults->{$singlemutant} ) ){ push( @todomuts, $singlemutant ); if($dbg){ warn("not in cache '$singlemutant'"); } }
+	foreach my $singlemutant (@$muts){
+	    unless ( exists $self->{results}->{$singlemutant} ){ 
+            push( @{$self->{todo}}, $singlemutant ); 
+            warn("not in cache '$singlemutant'") if $dbg;
+        }
 	}
-    @muts = @todomuts;
     
-    if( !@muts )
-    {
+    unless ( @{$self->{todo}} ){
 		if($dbg){ warn("all predictions were found in cache"); }
-		#print cached results and exit (@muts, @diff1, @diff2, and @collection are empty here and won't be used)
-		printStuff( \@orig_muts, \%diff1, \%diff2, \%collection, $OUT, $print_collection, $cacheresults, $tostore );
-		if( !$quiet ){ warn("output in '$fq_out_file'\n"); }
-		exit(0);
     }
 }
-
+sub results{
+    my ($self)=@_;
+    return %{$self->{results}};
+}
+sub todo{
+    my ($self)=@_;
+    return @{$self->{todo}};
+}
 sub store{
 
-	my( $__preds ) = @_;
-	my @cmd = ( 'snapc_store', '--seqfile', "$workdir/$jobname/$job_fasta_file");
+	my( $self,$preds,$fasta,$dbg ) = @_;
+    my $snapc_store=$main::config->val('snap2','snapc_store');
+	my @cmd = ( $snapc_store, '--seqfile', "$fasta");
 	if ($dbg) { cluck("@cmd"); }
 	open( my $cache, '|-', @cmd ) || confess( "failed to open pipe: $!" );
-	foreach( @$__preds ){ print $cache @$_; }
-	if( !close( $cache ) ){ confess( "failed to store results (@cmd:".Data::Dumper::Dumper($__preds).") in cache: $!" );  }
+	foreach(keys %$preds ){ print $cache @{$preds->{$_}}; }
+	if( !close( $cache ) ){ confess( "failed to store results (@cmd:".Data::Dumper::Dumper($preds).") in cache: $!" );  }
 }
 1;
