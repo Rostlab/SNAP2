@@ -1,23 +1,23 @@
 #!/usr/bin/perl
-package Features;
-use Getopt::Long;
-use Cwd 'abs_path';
-use Data::Dumper;
-use IO::File;
-use DB_File;
+package RG::Snap2::Features;
 use strict;
 use warnings;
-use Pfamparser;
-use List::Util qw (min max);
-use Profparser;
-use Pssmparser;
-use Psicparser;
-use Mdparser;
-use Disisparser;
-use Isisparser;
-use Profbvalparser;
-use Snapparser;
 use Carp qw(cluck :DEFAULT);
+use Cwd 'abs_path';
+use Data::Dumper;
+use DB_File;
+use Getopt::Long;
+use IO::File;
+use List::Util qw (min max);
+use RG::Snap2::Pfamparser;
+use RG::Snap2::Profparser;
+use RG::Snap2::Pssmparser;
+use RG::Snap2::Psicparser;
+use RG::Snap2::Mdparser;
+use RG::Snap2::Disisparser;
+use RG::Snap2::Isisparser;
+use RG::Snap2::Profbvalparser;
+use RG::Snap2::Snapparser;
 
 my @amino_acids = qw(A R N D C Q E G H I L K M F P S T W Y V X);
 my %index=(

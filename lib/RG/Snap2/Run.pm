@@ -1,11 +1,11 @@
 #!/usr/bin/perl -w
-package Run;
+package RG::Snap2::Run;
 use strict;
 use Carp qw(cluck :DEFAULT);
-use Features;
+use RG::Snap2::Features;
 use File::Basename;
 use File::chdir;
-use ForkManager;
+use Parallel::ForkManager;
 
 sub all{
     my ($muts,$workdir,$fcs,$cpu,$debug)=@_;

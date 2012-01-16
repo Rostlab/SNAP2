@@ -1,4 +1,4 @@
-package Swissparser;
+package RG::Snap2::Swissparser;
 
 use strict;
 use warnings;

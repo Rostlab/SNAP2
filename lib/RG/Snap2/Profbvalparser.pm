@@ -1,4 +1,4 @@
-package Profbvalparser;
+package RG::Snap2::Profbvalparser;
 
 use strict;
 use warnings;

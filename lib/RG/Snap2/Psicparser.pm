@@ -1,4 +1,4 @@
-package Psicparser;
+package RG::Snap2::Psicparser;
 
 use strict;
 use warnings;

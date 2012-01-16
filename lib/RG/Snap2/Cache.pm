@@ -1,4 +1,4 @@
-package Cache;
+package RG::Snap2::Cache;
 
 use strict;
 use Carp qw(cluck :DEFAULT);

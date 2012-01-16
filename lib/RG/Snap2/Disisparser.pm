@@ -1,4 +1,4 @@
-package Disisparser;
+package RG::Snap2::Disisparser;
 
 use strict;
 use warnings;

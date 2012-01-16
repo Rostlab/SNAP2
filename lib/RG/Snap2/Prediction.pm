@@ -1,10 +1,10 @@
-package Prediction;
+package RG::Snap2::Prediction;
 
 use strict;
 use warnings;
 use feature qw(say);
 use Carp;
-use Measure;
+use RG::Snap2::Measure;
 use List::Util qw(max);
 
 sub new {

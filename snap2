@@ -33,11 +33,10 @@ BEGIN {
     $snap_cache_root=$config->val('snap2', 'snap_cache_root') || "";
 }
 
-use lib glob( "$snap2dir/lib" );
-use Run;
-use Extract;
-use Predict;
-use Prediction;
+use RG::Snap2::Run;
+use RG::Snap2::Extract;
+use RG::Snap2::Predict;
+use RG::Snap2::Prediction;
 
 # popularity contest
 if( system('pp_popcon_cnt', '-p', 'snap2') == -1 ){ warn("The Rost Lab recommends you install the pp-popularity-contest package that provides pp_popcon_cnt:\n\nsudo apt-get install pp-popularity-contest\n"); }

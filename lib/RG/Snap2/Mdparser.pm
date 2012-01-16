@@ -1,4 +1,4 @@
-package Mdparser;
+package RG::Snap2::Mdparser;
 
 use strict;
 use warnings;

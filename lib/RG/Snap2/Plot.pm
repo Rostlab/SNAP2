@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-package Plot;
+package RG::Snap2::Plot;
 use strict;
 use feature qw(say);
 use Getopt::Long;

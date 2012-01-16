@@ -1,4 +1,4 @@
-package Snapparser;
+package RG::Snap2::Snapparser;
 
 use strict;
 use warnings;

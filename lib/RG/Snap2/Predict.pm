@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-package Predict;
+package RG::Snap2::Predict;
 use strict;
 use feature qw(say);
 use AI::FANN;

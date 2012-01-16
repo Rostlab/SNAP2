@@ -1,4 +1,4 @@
-package Pfamparser;
+package RG::Snap2::Pfamparser;
 
 use strict;
 use warnings;

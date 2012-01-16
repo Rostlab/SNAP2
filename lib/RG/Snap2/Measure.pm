@@ -1,4 +1,4 @@
-package Measure;
+package RG::Snap2::Measure;
 use strict;
 use feature qw(say);
 use List::Util qw(sum);

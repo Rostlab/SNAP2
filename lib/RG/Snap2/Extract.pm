@@ -1,15 +1,15 @@
 #!/usr/bin/perl -w
-package Extract;
+package RG::Snap2::Extract;
 use strict;
 use Carp qw(cluck :DEFAULT);
 use Data::Dumper;
-use Features;
-use Pssmparser;
-use Psicparser;
-use Isisparser;
-use Disisparser;
-use Swissparser;
-use Profbvalparser;
+use RG::Snap2::Features;
+use RG::Snap2::Pssmparser;
+use RG::Snap2::Psicparser;
+use RG::Snap2::Isisparser;
+use RG::Snap2::Disisparser;
+use RG::Snap2::Swissparser;
+use RG::Snap2::Profbvalparser;
 
 sub all{
     my ($workdir,$debug)=@_;

@@ -1,4 +1,4 @@
-package Profparser;
+package RG::Snap2::Profparser;
 use strict;
 use Data::Dumper;
 use Carp qw(cluck :DEFAULT);

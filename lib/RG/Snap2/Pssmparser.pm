@@ -1,4 +1,4 @@
-package Pssmparser;
+package RG::Snap2::Pssmparser;
 
 use strict;
 use warnings;

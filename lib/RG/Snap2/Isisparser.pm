@@ -1,4 +1,4 @@
-package Isisparser;
+package RG::Snap2::Isisparser;
 
 use strict;
 use warnings;
