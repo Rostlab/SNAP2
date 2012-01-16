@@ -35,7 +35,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(dist_bin_SCRIPTS) \
-	$(dist_doc_DATA) $(dist_pkgdata_DATA) $(srcdir)/Makefile.am \
+	$(dist_doc_DATA) $(dist_noinst_DATA) $(dist_pkgdata_DATA) \
+	$(srcdir)/Build.PL.in $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/configure AUTHORS COPYING \
 	ChangeLog INSTALL NEWS install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -45,7 +46,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = Build.PL
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -83,7 +84,7 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(man_MANS)
-DATA = $(dist_doc_DATA) $(dist_pkgdata_DATA)
+DATA = $(dist_doc_DATA) $(dist_noinst_DATA) $(dist_pkgdata_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -140,13 +141,13 @@ ECHO_C =
 ECHO_N = -n
 ECHO_T = 
 INSTALL = /usr/bin/install -c
+INSTALL_BASE_ARG = install_base=NONE
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LIBOBJS = 
 LIBS = 
-LN_S = ln -s
 LTLIBOBJS = 
 MAKEINFO = ${SHELL} /mnt/project/resnap/trunk/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
@@ -202,12 +203,13 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 dist_bin_SCRIPTS = snap2
+dist_noinst_DATA = Build.PL.in
 dist_pkgdata_DATA = \
 	phat.txt \
 	snap2rc.default
 
 dist_doc_DATA = AUTHORS README
-SUBDIRS = example models lib
+SUBDIRS = examples models lib
 man_MANS = snap2.1
 all: all-recursive
 
@@ -246,6 +248,8 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
+Build.PL: $(top_builddir)/config.status $(srcdir)/Build.PL.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-dist_binSCRIPTS: $(dist_bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
@@ -684,7 +688,7 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(SCRIPTS) $(MANS) $(DATA)
+all-am: Makefile $(SCRIPTS) $(MANS) $(DATA) all-local
 installdirs: installdirs-recursive
 installdirs-am:
 	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgdatadir)"; do \
@@ -722,7 +726,8 @@ clean-am: clean-generic clean-local mostlyclean-am
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-tags
+distclean-am: clean-am distclean-generic distclean-local \
+	distclean-tags
 
 dvi: dvi-recursive
 
@@ -736,8 +741,8 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-dist_docDATA install-dist_pkgdataDATA \
-	install-man
+install-data-am: install-data-local install-dist_docDATA \
+	install-dist_pkgdataDATA install-man
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-dvi: install-dvi-recursive
@@ -795,13 +800,14 @@ uninstall-man: uninstall-man1
 	tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am am--refresh check check-am clean clean-generic \
-	clean-local ctags ctags-recursive dist dist-all dist-bzip2 \
-	dist-gzip dist-lzma dist-shar dist-tarZ dist-xz dist-zip \
-	distcheck distclean distclean-generic distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-data-hook install-dist_binSCRIPTS \
+	all all-am all-local am--refresh check check-am clean \
+	clean-generic clean-local ctags ctags-recursive dist dist-all \
+	dist-bzip2 dist-gzip dist-lzma dist-shar dist-tarZ dist-xz \
+	dist-zip distcheck distclean distclean-generic distclean-local \
+	distclean-tags distcleancheck distdir distuninstallcheck dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-data-hook \
+	install-data-local install-dist_binSCRIPTS \
 	install-dist_docDATA install-dist_pkgdataDATA install-dvi \
 	install-dvi-am install-exec install-exec-am install-exec-hook \
 	install-html install-html-am install-info install-info-am \
@@ -822,13 +828,25 @@ snap2.1: snap2
 	sed -e 's|__datadir__|$(datadir)|g;s|__docdir__|$(docdir)|g;s|__pkgdatadir__|$(pkgdatadir)|g;s|__PREFIX__|$(prefix)|g;s|__sysconfdir__|$(sysconfdir)|g;s|__VERSION__|$(VERSION)|g;' "$<" | \
 	pod2man -c 'User Commands' -r "$(VERSION)" -name $(shell tr '[:lower:]' '[:upper:]' <<< "$(basename $@)") > "$@"
 
+all-local: build-stamp
+
 clean-local:
-	rm -f $(man_MANS)
+	rm -f snap2.1 
+	if [ -e Build ]; then perl Build clean && rm -f Build build-stamp; fi
+
+distclean-local:
+	    rm -rf _build MYMETA.yml
+
+build-stamp: Build.PL
+	    perl Build.PL installdirs=vendor && perl Build && touch build-stamp
 
 install-data-hook:
 	for f in '$(DESTDIR)$(pkgdatadir)/snap2rc.default'; do \
 		sed -i -e 's|__datadir__|$(datadir)|g;s|__bindir__|$(bindir)|g;s|__docdir__|$(docdir)|g;s|__pkgdatadir__|$(pkgdatadir)|g;s|__PREFIX__|$(prefix)|g;s|__sysconfdir__|$(sysconfdir)|g;s|__VERSION__|$(VERSION)|g;' "$$f"; \
 	done
+
+install-data-local:
+	perl Build install destdir=$(DESTDIR) $(INSTALL_BASE_ARG) create_packlist=0
 
 install-exec-hook:
 	sed -i -e 's|__datadir__|$(datadir)|g;s|__docdir__|$(docdir)|g;s|__pkgdatadir__|$(pkgdatadir)|g;s|__PREFIX__|$(prefix)|g;s|__sysconfdir__|$(sysconfdir)|g;s|__VERSION__|$(VERSION)|g;' "$(DESTDIR)$(bindir)/snap2"

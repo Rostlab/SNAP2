@@ -558,6 +558,7 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIB@&t@OBJS
+INSTALL_BASE_ARG
 am__untar
 am__tar
 AMTAR
@@ -581,7 +582,6 @@ am__isrc
 INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
-LN_S
 target_alias
 host_alias
 build_alias
@@ -1667,20 +1667,6 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-
-# Checks for programs.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether ln -s works" >&5
-$as_echo_n "checking whether ln -s works... " >&6; }
-LN_S=$as_ln_s
-if test "$LN_S" = "ln -s"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no, using $LN_S" >&5
-$as_echo "no, using $LN_S" >&6; }
-fi
-
-
 am__api_version='1.11'
 
 ac_aux_dir=
@@ -2188,7 +2174,13 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 
-ac_config_files="$ac_config_files Makefile example/Makefile lib/Makefile models/Makefile"
+ac_config_files="$ac_config_files Makefile Build.PL examples/Makefile lib/Makefile lib/RG/Makefile lib/RG/Snap2/Makefile models/Makefile"
+
+
+
+if test "x$prefix" != "x/usr"; then
+    INSTALL_BASE_ARG=install_base=$prefix
+fi
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -2900,8 +2892,11 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "example/Makefile") CONFIG_FILES="$CONFIG_FILES example/Makefile" ;;
+    "Build.PL") CONFIG_FILES="$CONFIG_FILES Build.PL" ;;
+    "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
+    "lib/RG/Makefile") CONFIG_FILES="$CONFIG_FILES lib/RG/Makefile" ;;
+    "lib/RG/Snap2/Makefile") CONFIG_FILES="$CONFIG_FILES lib/RG/Snap2/Makefile" ;;
     "models/Makefile") CONFIG_FILES="$CONFIG_FILES models/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5 ;;
