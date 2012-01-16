@@ -145,9 +145,9 @@ else {
 
 #Look for pre-computed results
 if ($use_snap_cache && !$only_extract){
-    use Cache;
+    use RG::Snap2::Cache;
     warn "\nLooking for cache results..\n" unless $quiet;
-    $snap_cache= new Cache($fasta_file,\@mutants,$mut,$snap_cache_root,$debug);
+    $snap_cache= new RG::Snap2::Cache($fasta_file,\@mutants,$mut,$snap_cache_root,$debug);
     %snap_cache_results=$snap_cache->results();
     unless ($fcs){
         my $todomuts="$workdir/$name.todo";

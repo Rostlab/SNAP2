@@ -95,7 +95,7 @@ ECHO_C =
 ECHO_N = -n
 ECHO_T = 
 INSTALL = /usr/bin/install -c
-INSTALL_BASE_ARG = install_base=NONE
+INSTALL_BASE_ARG = install_base=/tmp/hecht/snap2
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
@@ -145,7 +145,7 @@ mandir = ${datarootdir}/man
 mkdir_p = /bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local
+prefix = /tmp/hecht/snap2
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
