@@ -14,12 +14,7 @@ sub all{
     my $name=$main::name;
 
     #call predictprotein to retrieve MD, PSIC, BLAST PSSM, PROF, ISIS, DISIS
-    if ($main::use_pp == 1){
-        predictprotein($workdir,$fasta,$fcs,$cpu,$debug);
-    }
-    else {
-        #todo run blast,psic,profbval(,isis,disis,md)
-    }
+    predictprotein($workdir,$fasta,$fcs,$cpu,$debug);
 
     #secondary structure prediction of mutants with prof
     if ($cpu>1){
@@ -118,7 +113,7 @@ sub predictprotein{
         "--target=query.mdisorder",
         "--blast-processors=$blast_processors");
     push @cmd,"--force-cache-store" if $fcs;
-    push @cmd,"--workdir=$workdir" unless $main::use_pp_cache;
+    push @cmd,"--output-dir=$workdir" unless $main::use_pp_cache;
     cluck(@cmd) if $debug;
     system(@cmd) && confess "Failed to execute '@cmd': ".($?>>8);
 
@@ -150,6 +145,16 @@ sub predictprotein{
             my @cmd=("cp","$file","$workdir/$main::name"."$ext");
             cluck(@cmd) if $debug;
             system(@cmd) && confess "Failed to execute '@cmd': ".($?>>8);
+        }
+    }
+    else {
+        my @ppfiles = glob ("$workdir/query.*");
+        foreach (@ppfiles) {
+            my ($fname,$base,$ext)=fileparse($_,qr/\.[^.]*/);
+            my @cmd=("mv","$_","$workdir/$main::name"."$ext");
+            cluck(@cmd) if $debug;
+            system(@cmd) && confess "Failed to execute '@cmd': ".($?>>8);
+            
         }
     }
 

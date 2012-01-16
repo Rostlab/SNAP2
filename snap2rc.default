@@ -8,7 +8,7 @@ snapc_fetch=__bindir__/snapc_fetch
 #snap cache store executable
 snapc_store=__bindir__/snapc_store
 #snap cache root - overrides snap-cache-mgr configuration
-#snapc_root=
+#snap_cache_root=
 # blastpgp_processors
 blastpgp_processors=1
 #use predictprotein [0|1], default: 1

@@ -9,7 +9,7 @@ use File::Basename;
 use File::Path qw(make_path);
 use Carp qw(cluck :DEFAULT);
 
-our ($use_pp,$use_pp_cache,$use_snap_cache,$allmuts,$config,$sequence,@mutants,$name,@sequence_array,$swissdb,$db_swiss,$swiss_dat,$big80,$phat_matrix,@todo);
+our ($use_pp,$use_pp_cache,$use_snap_cache,$snap_cache_root,$allmuts,$config,$sequence,@mutants,$name,@sequence_array,$swissdb,$db_swiss,$swiss_dat,$big80,$phat_matrix,@todo);
 my ($version,$snap2dir,$fannlib,$cpu);
 BEGIN {
     use Config::IniFiles;
@@ -28,9 +28,9 @@ BEGIN {
     $big80=$config->val('blast','big80');
     $phat_matrix=$config->val('data','phat_matrix');
     $cpu=$config->val('snap2', 'blastpgp_processors');
-    $use_pp=$config->val('snap2', 'use_pp');
     $use_pp_cache=$config->val('snap2', 'use_pp_cache');
     $use_snap_cache=$config->val('snap2', 'use_snap_cache');
+    $snap_cache_root=$config->val('snap2', 'snap_cache_root') || "";
 }
 
 use lib glob( "$snap2dir/lib" );
@@ -61,7 +61,9 @@ my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'version' => \$print_version,
                         'help' => \$help,
                         'threshold=i' => \$threshold,
-                        'use-snap-cache!' => \$use_snap_cache
+                        'use-snap-cache!' => \$use_snap_cache,
+                        'snap-cache-root=s' => \$snap_cache_root,
+                        'use-pp-cache!' => \$use_pp_cache
 );
 (say $version and exit(0)) if $print_version;
 die_usage("Please read the man page for more detailed information") if $help;
@@ -146,14 +148,19 @@ else {
 if ($use_snap_cache && !$only_extract){
     use Cache;
     warn "\nLooking for cache results..\n" unless $quiet;
-    $snap_cache= new Cache($fasta_file,\@mutants,$mut,$debug);
+    $snap_cache= new Cache($fasta_file,\@mutants,$mut,$snap_cache_root,$debug);
     %snap_cache_results=$snap_cache->results();
-    @todo=$snap_cache->todo();
-    my $todomuts="$workdir/$name.todo";
-    open (TODO,">$todomuts") or confess "\nError: failed to write file: $todomuts\n";
-    print TODO join ("\n",@todo);
-    close TODO;
-    $mut=$todomuts;
+    unless ($fcs){
+        my $todomuts="$workdir/$name.todo";
+        open (TODO,">$todomuts") or confess "\nError: failed to write file: $todomuts\n";
+        print TODO join ("\n",@todo);
+        close TODO;
+        $mut=$todomuts;
+        @todo=$snap_cache->todo();
+    }
+    else{
+        @todo=@mutants;
+    }
 }
 else {
     @todo=@mutants;
@@ -314,13 +321,13 @@ sub write_output{
     foreach my $mutant (@$mutants) {
         if (defined $predictions->{$mutant}){#from prediction
             print "From prediction: ".$predictions->{$mutant}->[0] if $debug;
-            print OUT $predictions->{$mutant}->[0];
-            print OUT $predictions->{$mutant}->[1] if $pc;
+            print OUT $predictions->{$mutant}->[0] if $pc;
+            print OUT $predictions->{$mutant}->[1];
         } 
         elsif (defined $snap_cache_results->{$mutant}){ #from cache
             print "From cache: " .$snap_cache_results->{$mutant}->[0] if $debug;  
-            print OUT $snap_cache_results->{$mutant}->[0];
-            print OUT $snap_cache_results->{$mutant}->[1] if $pc;
+            print OUT $snap_cache_results->{$mutant}->[0] if $pc;
+            print OUT $snap_cache_results->{$mutant}->[1];
         }
         else{ #failed
             warn "No prediction available for mutant: $mutant\nPlease file a bug report";

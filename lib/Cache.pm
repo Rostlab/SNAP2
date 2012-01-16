@@ -6,15 +6,15 @@ use Data::Dumper;
 use feature qw(say);
 
 sub new{
-    my ($class,$seq,$muts,$mutfile,$dbg)=@_;
+    my ($class,$seq,$muts,$mutfile,$root,$dbg)=@_;
 
     my $self ={
         results => {},
-        #muts => [],
-        todo => [],
-        tostore => {}
+        todo => []
     };
     bless $self, $class;
+    $self->{root}=$root if $root;
+    confess "SNAP cache root directory does not exist\n" unless -e $root;
     $self->retrieve($seq,$mutfile,$muts,$dbg);
     return $self;
 }
@@ -22,6 +22,7 @@ sub retrieve{
     my ($self,$seqfile,$mutfile,$muts,$dbg)=@_;
     my $snapc_fetch=$main::config->val('snap2','snapc_fetch');
 	my @cmd = ( $snapc_fetch, '--seqfile', $seqfile, '--mutfile', $mutfile );
+    push @cmd,"--root",$self->{root} if $self->{root};
 	if ($dbg) { cluck("@cmd"); }
 	open( my $fetchpipe, '-|', @cmd ) || confess( "failed to open pipe: $!" );
 	my $cachereturn = [ <$fetchpipe> ];
@@ -49,19 +50,22 @@ sub retrieve{
 		if($dbg){ warn("all predictions were found in cache"); }
     }
 }
+
 sub results{
     my ($self)=@_;
     return %{$self->{results}};
 }
+
 sub todo{
     my ($self)=@_;
     return @{$self->{todo}};
 }
-sub store{
 
+sub store{
 	my( $self,$preds,$fasta,$dbg ) = @_;
     my $snapc_store=$main::config->val('snap2','snapc_store');
-	my @cmd = ( $snapc_store, '--seqfile', "$fasta");
+	my @cmd = ( $snapc_store, '--seqfile', $fasta);
+    push @cmd,"--root",$self->{root} if $self->{root};
 	if ($dbg) { cluck("@cmd"); }
 	open( my $cache, '|-', @cmd ) || confess( "failed to open pipe: $!" );
 	foreach(keys %$preds ){ print $cache @{$preds->{$_}}; }
