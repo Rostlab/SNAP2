@@ -1,0 +1,13 @@
+use warnings;
+use strict;
+use Module::Build;
+
+my $build = Module::Build->new(
+    module_name     => 'RG::Snap2',
+    license         => 'unknown',                                                                                                                             
+    dist_name       => 'snap2',
+    dist_version    => '@VERSION@',
+    dist_author     => ['Maximilian Hecht <hecht@rostlab.org>', 'Burkhard Rost'],
+    dist_abstract   => 'Tool for predicting functional effects of non-synonymous single nucleotide polymorphisms',
+);
+$build->create_build_script;
