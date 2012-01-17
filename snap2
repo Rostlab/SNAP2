@@ -168,11 +168,11 @@ write_output($out,\@mutants,\%predictions,\%snap_cache_results,$debug) && exit(0
 
 #Run all external programs
 warn "\nRunning external programs..\n" unless $quiet;
-Run::all($mut,$workdir,$fcs,$cpu,$debug);
+RG::Snap2::Run::all($mut,$workdir,$fcs,$cpu,$debug);
 
 #Extract feature values
 warn "\nExtracting feature values..\n" unless $quiet;
-my $data=Extract::all($workdir,$debug>1 ? 1 : 0);
+my $data=RG::Snap2::Extract::all($workdir,$debug>1 ? 1 : 0);
 
 #write out the featurefile (for training purpose, won't be used anymore afterwards)
 confess "Number of labels is not consistent with number of data points" if ($labeled_muts_file && scalar(@labels) != scalar(@$data));
@@ -188,7 +188,7 @@ exit(0) if $only_extract;
 
 #Run all the neural networks
 warn "\nRunning predictions..\n" unless $quiet;
-my %raw_pred=Predict::all($data,"$snap2dir/models",$debug>1 ? 1 : 0);
+my %raw_pred=RG::Snap2::Predict::all($data,"$snap2dir/models",$debug>1 ? 1 : 0);
 confess "Number of predictions is not consistent with number of data points" if scalar(keys %raw_pred) != scalar(@todo);
 
 #Expected accuracy as obtained from 10-fold cross-validation
