@@ -9,18 +9,19 @@ Homepage:  http://rostlab.org/
 
 Package: snap2
 Architecture: all
-Depends: ${perl:Depends}, ${misc:Depends}, blast2, libai-fann-perl, libconfig-inifiles-perl, libfile-chdir-perl, libparallel-forkmanager-perl, predictprotein, reprof, rost-runpsic, sift
+Depends: ${perl:Depends}, ${misc:Depends}, blast2, libai-fann-perl, libconfig-inifiles-perl, libfile-chdir-perl, libparallel-forkmanager-perl, predictprotein, reprof, sift
 Recommends: pp-popularity-contest
-Suggests: librg-utils-perl
+Suggests: librg-utils-perl, snap-cache-mgr
 Description: predictor for functional effect of non-synonymous SNPs
  SNAP2 is neural network based predictor for functional effects of
- non-synonymous single nucleotide polymorphisms (nsSNP).
- It is capable of classifying the effect SNPs in proteins of all kingdoms into
- either neutral or non-neutral.
- The 10-fold cross-validation on a mixed data set of 80.000 mutants showed
- that accuracy and coverage for both neutral and non-neutral substitutions
- is approximately 80%.
+ non-synonymous single nucleotide polymorphisms (nsSNP) classifying
+ the effect SNPs in proteins of all kingdoms into either neutral or non-neutral.
+ .
  This tool is especially optimized towards predicting all possible mutations
  in a protein (i.e. substituting each position by all 19 non-native amino
  acids). Benchmarking results suggest an average runtime of 60 min for a
  complete mutagenesis experiment.
+ .
+ The 10-fold cross-validation on a mixed data set of 80.000 mutants showed
+ that accuracy and coverage for both neutral and non-neutral substitutions
+ is approximately 80%.
