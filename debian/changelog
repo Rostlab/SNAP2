@@ -1,4 +1,4 @@
-snap2 (1.0.1-1) UNRELEASED; urgency=low
+snap2 (1.0.1-1) unstable; urgency=low
 
   * Minor modifications
   * lkajan: changed Section to non-free/science

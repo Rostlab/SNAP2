@@ -1,4 +1,4 @@
-snapfun (1.0.1) UNRELEASED; urgency=low
+snapfun (1.0.1) unstable; urgency=low
 
   * Improved caching logic, added commandline parameters
   * changed default configuration
