@@ -361,11 +361,11 @@ SNAP is a neural-network based method that uses in silico derived protein inform
 
 =head2 Output format
 
-Self-annotating, see example outputs in F<__docdir__/examples>.  No output for mutations below minimum reliability or expected accuracy but see B<--print-collection>.
+Mutation    Binary prediction       Reliability Index   Expected Accuracy
 
-Value ranges in output:
+<mutation>  [Non-neutral|Neutral]   [0-9]               [0-100%]
 
- <mutation> [Non-neutral|Neutral] [0-9] [0-100%]
+See example outputs in F<__docdir__/examples>.  Also see B<--print-collection>.
 
 =head1 REFERENCES
 
