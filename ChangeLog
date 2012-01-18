@@ -1,3 +1,10 @@
+snapfun (1.0.1) unstable; urgency=low
+
+  * Improved caching logic, added commandline parameters
+  * changed default configuration
+
+ -- Maximilian Hecht <hecht@rostlab.org>  Wed, 18 Jan 2012 9:49:06 +0100
+
 snapfun (1.0.0) unstable; urgency=low
 
   * lkajan: updated license file and man page

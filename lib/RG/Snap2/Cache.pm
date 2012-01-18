@@ -22,7 +22,7 @@ sub retrieve{
     my ($self,$seqfile,$mutfile,$muts,$dbg)=@_;
     my $snapc_fetch=$main::config->val('snap2','snapc_fetch');
 	my @cmd = ( $snapc_fetch, '--seqfile', $seqfile, '--mutfile', $mutfile );
-    push @cmd,"--root",$self->{root} if $self->{root};
+    push @cmd,"--cache-root",$self->{root} if $self->{root};
 	if ($dbg) { cluck("@cmd"); }
 	open( my $fetchpipe, '-|', @cmd ) || confess( "failed to open pipe: $!" );
 	my $cachereturn = [ <$fetchpipe> ];
@@ -65,7 +65,7 @@ sub store{
 	my( $self,$preds,$fasta,$dbg ) = @_;
     my $snapc_store=$main::config->val('snap2','snapc_store');
 	my @cmd = ( $snapc_store, '--seqfile', $fasta);
-    push @cmd,"--root",$self->{root} if $self->{root};
+    push @cmd,"--cache-root",$self->{root} if $self->{root};
 	if ($dbg) { cluck("@cmd"); }
 	open( my $cache, '|-', @cmd ) || confess( "failed to open pipe: $!" );
 	foreach(keys %$preds ){ print $cache @{$preds->{$_}}; }
