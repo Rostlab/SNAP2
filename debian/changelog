@@ -1,6 +1,7 @@
-snap2 (1.0.0-2) unstable; urgency=low
+snap2 (1.0.1-1) UNRELEASED; urgency=low
 
   * Minor modifications
+  * lkajan: changed Section to non-free/science
 
  -- Maximilian Hecht <hecht@rostlab.org>  Tue, 17 Jan 2012 12:27:14 +0100
 
