@@ -19,7 +19,7 @@ sub all{
     #secondary structure prediction of mutants with prof
     if ($cpu>1){
         my @mutlist=splitmuts(\@main::todo,$cpu,$workdir,$debug);
-        my $pm=new ForkManager($cpu);
+        my $pm=new Parallel::ForkManager($cpu);
         foreach my $mut (@mutlist) {
             $pm->start and next;
             reprof($mut,$workdir,$debug);

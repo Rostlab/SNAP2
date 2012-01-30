@@ -6,16 +6,18 @@ use Data::Dumper;
 use feature qw(say);
 
 sub new{
-    my ($class,$seq,$muts,$mutfile,$root,$dbg)=@_;
+    my ($class,$root)=@_;
 
     my $self ={
         results => {},
         todo => []
     };
     bless $self, $class;
-    $self->{root}=$root if $root;
-    confess "SNAP cache root directory does not exist\n" unless -e $root;
-    $self->retrieve($seq,$mutfile,$muts,$dbg);
+    if ($root){
+        confess "SNAP cache root directory does not exist\n" unless -e $root;
+        $self->{root}=$root;
+    }
+    #$self->retrieve($seq,$mutfile,$muts,$dbg);
     return $self;
 }
 sub retrieve{

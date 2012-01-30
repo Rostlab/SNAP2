@@ -620,7 +620,7 @@ sub acc_comp{
 sub profDiff{
 	my ($wt,$pos,$mut,$mutantprof_file,$wtprof,$debug)=@_;
 
-	my $mutprof=Profparser->new($mutantprof_file);
+	my $mutprof=RG::Snap2::Profparser->new($mutantprof_file);
 	
 	#difference and sign for PREl,RI_A,pH,pE,pL and RI_S
 	my ($prel_sign,$oth_sign,$ote_sign,$otl_sign,$ss_change,$sa_change)=qw(0 0 0 0 0 0);
@@ -664,7 +664,7 @@ sub extractPfam{
     my ($model,$domain)=$$wtpfam->at_pos($pos);
     return @features unless ($model && $domain);
     
-    $mutpfam=Pfamparser->new($mutpfam);
+    $mutpfam=RF::Snap2::Pfamparser->new($mutpfam);
 
     #if there is no significant hit in the mutation pfam
     return qw(0 0 0 1) unless $mutpfam->{hit};

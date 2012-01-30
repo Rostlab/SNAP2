@@ -17,9 +17,9 @@ sub all{
     my $seqlength=length($main::sequence); 
     my $pssm=new RG::Snap2::Pssmparser("$workdir/$main::name.blastPsiMat");
     my $psic=new RG::Snap2::Psicparser("$workdir/$main::name.psic");
-    #my $isis=new RG::Snap2::Isisparser("$workdir/$main::name.isis");
+    my $isis=new RG::Snap2::Isisparser("$workdir/$main::name.isis");
     #my $disis=new RG::Snap2::Disisparser("$workdir/$main::name.disis");
-    #my $md=new RG::Snap2::Mdparser("$workdir/$main::name.mdisorder");
+    my $md=new RG::Snap2::Mdparser("$workdir/$main::name.mdisorder");
     my $prof=new RG::Snap2::Profparser("$workdir/$main::name.reprof");
     my $swiss=new RG::Snap2::Swissparser("$workdir/$main::name.blastswiss",$main::swiss_dat,$main::db_swiss);
     my $profbval=new RG::Snap2::Profbvalparser("$workdir/$main::name.profbval");
@@ -44,21 +44,21 @@ sub all{
         push @features,@aacomp,@acccomp,@seccomp,@protlength;
 
         #Sequence based features
-        push @features,RG::Snap2::Features::blastPssm($seqlength,$pos,\$pssm,5,$debug);
-        push @features,RG::Snap2::Features::blastPerc($seqlength,$pos,\$pssm,1,$debug);
-        push @features,RG::Snap2::Features::psic($seqlength,$pos,\$psic,13,$debug);
-        push @features,RG::Snap2::Features::sequenceprofile(\@main::sequence_array,$seqlength,$pos,9,$debug);
+        push @features,RG::Snap2::Features::blastPssm($seqlength,$pos,\$pssm,7,$debug);
+        push @features,RG::Snap2::Features::blastPerc($seqlength,$pos,\$pssm,7,$debug);
+        push @features,RG::Snap2::Features::psic($seqlength,$pos,\$psic,7,$debug);
+        push @features,RG::Snap2::Features::sequenceprofile(\@main::sequence_array,$seqlength,$pos,7,$debug);
         #push @features,RG::Snap2::Features::isis($seqlength,$pos,\$isis,17,$debug);
         #push @features,RG::Snap2::Features::disis($seqlength,$pos,\$disis,5,$debug);
-        #push @features,RG::Snap2::Features::md($seqlength,$pos,\$md,9,$debug);
-        #push @features,RG::Snap2::Features::sec_bin($seqlength,$pos,\$prof,13,$debug);
-        #push @features,RG::Snap2::Features::sec_raw($seqlength,$pos,\$prof,9,$debug);
-        push @features,RG::Snap2::Features::acc_rel($seqlength,$pos,\$prof,5,$debug);
+        push @features,RG::Snap2::Features::md($seqlength,$pos,\$md,7,$debug);
+        push @features,RG::Snap2::Features::sec_bin($seqlength,$pos,\$prof,7,$debug);
+        #push @features,RG::Snap2::Features::sec_raw($seqlength,$pos,\$prof,7,$debug);
+        push @features,RG::Snap2::Features::acc_rel($seqlength,$pos,\$prof,7,$debug);
         #push @features,RG::Snap2::Features::acc_bin($seqlength,$pos,\$prof,5,$debug);
-        #push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,17,'charge',$debug);
-        #push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,17,'hyd',$debug);
-        #push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,17,'vol',$debug);
-        push @features,RG::Snap2::Features::profbval($seqlength,$pos,\$profbval,5,$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'charge',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'hyd',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'vol',$debug);
+        push @features,RG::Snap2::Features::profbval($seqlength,$pos,\$profbval,7,$debug);
         
         #Difference features
         push @features,RG::Snap2::Features::pssmDiff($wt,$pos,$mut,\$pssm,$debug);
@@ -66,7 +66,7 @@ sub all{
         push @features,RG::Snap2::Features::psicDiff($wt,$pos,$mut,\$psic,$debug);
         #push @features,RG::Snap2::Features::indexDiff($wt,$mut,'vol',$debug);
         #push @features,RG::Snap2::Features::indexDiff($wt,$mut,'charge',$debug);
-        #push @features,RG::Snap2::Features::profDiff($wt,$pos,$mut,"$workdir/$main::name.reprof_$main::todo[$i]",\$oriprof,$debug);
+        push @features,RG::Snap2::Features::profDiff($wt,$pos,$mut,"$workdir/$main::name.reprof_$main::todo[$i]",\$oriprof,$debug);
 
         #Mutation based features
         push @features,RG::Snap2::Features::swiss($wt,$pos,$mut,\$swiss,$main::phat_matrix,$debug);

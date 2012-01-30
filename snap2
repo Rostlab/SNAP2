@@ -10,7 +10,7 @@ use File::Path qw(make_path);
 use Carp qw(cluck :DEFAULT);
 
 our ($use_pp,$use_pp_cache,$use_snap_cache,$snap_cache_root,$allmuts,$config,$sequence,@mutants,$name,@sequence_array,$swissdb,$db_swiss,$swiss_dat,$big80,$phat_matrix,@todo);
-my ($version,$snap2dir,$fannlib,$cpu);
+my ($version,$snap2dir,$cpu);
 BEGIN {
     use Config::IniFiles;
     our $VERSION = "__VERSION__";
@@ -41,9 +41,9 @@ use RG::Snap2::Prediction;
 # popularity contest
 if( system('pp_popcon_cnt', '-p', 'snap2') == -1 ){ warn("The Rost Lab recommends you install the pp-popularity-contest package that provides pp_popcon_cnt:\n\nsudo apt-get install pp-popularity-contest\n"); }
 
-my($in,$out,$mut,$snap_cache,%snap_cache_results,%predictions,$workdir,$plot,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs,$print_version,$help);
+my($in,$out,$mut,$snap_cache,%snap_cache_results,%predictions,$workdir,$plot,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs,$print_version,$help,$nolookup);
 my $debug=0;
-my $threshold=10;
+my $threshold=7;
 $cpu=1;
 my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'out=s'    =>  \$out,
@@ -66,7 +66,8 @@ my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'threshold=i' => \$threshold,
                         'use-snap-cache!' => \$use_snap_cache,
                         'snap-cache-root=s' => \$snap_cache_root,
-                        'use-pp-cache!' => \$use_pp_cache
+                        'use-pp-cache!' => \$use_pp_cache,
+                        'no-lookup' => \$nolookup
 );
 (say $version and exit(0)) if $print_version;
 die_usage("Please read the man page for more detailed information") if $help;
@@ -76,7 +77,6 @@ die_usage("Unknown argument") unless $args_ok;
 
 if ($workdir){
     $workdir=Cwd::realpath( $workdir );
-    $use_snap_cache=0; #don't use cache lookup if workdir is given
 }
 else {
     $workdir=File::Temp::tempdir( CLEANUP=> !$debug);
@@ -150,19 +150,20 @@ else {
 #Look for pre-computed results
 if ($use_snap_cache && !$only_extract){
     use RG::Snap2::Cache;
-    warn "\nLooking for cache results..\n" unless $quiet;
-    $snap_cache= new RG::Snap2::Cache($fasta_file,\@mutants,$mut,$snap_cache_root,$debug);
-    %snap_cache_results=$snap_cache->results();
-    unless ($fcs){
-        my $todomuts="$workdir/$name.todo";
-        open (TODO,">$todomuts") or confess "\nError: failed to write file: $todomuts\n";
-        print TODO join ("\n",@todo);
-        close TODO;
-        $mut=$todomuts;
-        @todo=$snap_cache->todo();
-    }
-    else{
-        @todo=@mutants;
+    $snap_cache= new RG::Snap2::Cache($snap_cache_root);
+    @todo=@mutants;
+    unless ($nolookup){
+        warn "\nLooking for cache results..\n" unless $quiet;
+        $snap_cache->retrieve($fasta_file,$mut,\@mutants,$debug);
+        %snap_cache_results=$snap_cache->results();
+        unless ($fcs){
+            @todo=$snap_cache->todo();
+            my $todomuts="$workdir/$name.todo";
+            open (TODO,">$todomuts") or confess "\nError: failed to write file: $todomuts\n";
+            print TODO join ("\n",@todo);
+            close TODO;
+            $mut=$todomuts;
+        }
     }
 }
 else {
@@ -468,6 +469,10 @@ Sets the decision (i.e neutral/non-neutral) threshold. Valid range [-100,100]; D
 =item --no-use-pp-cache
 
 Enable (Disable) predictprotein cache usage
+
+=item no-lookup
+
+Force re-calculation of intermediate files instead of looking for cache results. (Only sensible in combination with B<--workdir> and B<--use-snap-cache>)
 
 =back
 
