@@ -1,3 +1,9 @@
+snap2 (1.0.2-1) unstable; urgency=low
+
+  * new release
+
+ -- Maximilian Hecht <hecht@rostlab.org>  Wed, 18 Jan 2012 12:21:54 +0100
+
 snap2 (1.0.1-1) unstable; urgency=low
 
   * Minor modifications
