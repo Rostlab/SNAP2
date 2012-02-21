@@ -1,3 +1,9 @@
+snap2 (1.0.3-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Laszlo Kajan <lkajan@rostlab.org>  Tue, 21 Feb 2012 13:43:45 +0100
+
 snap2 (1.0.2-1) unstable; urgency=low
 
   * new release

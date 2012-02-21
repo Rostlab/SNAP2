@@ -1,4 +1,4 @@
-AC_INIT([snap2], [1.0.2], [hecht@rostlab.org])
+AC_INIT([snap2], [1.0.3], [hecht@rostlab.org])
 AM_INIT_AUTOMAKE([-Wall])
 AC_CONFIG_FILES([Makefile
                  Build.PL

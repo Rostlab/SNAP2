@@ -106,10 +106,10 @@ sub predictprotein{
         "--target=query.psic",
         "--target=query.profRdb",
         "--target=query.prof1Rdb",
-    #    "--target=query.SIFTprediction ", 
+        #"--target=query.SIFTprediction ", 
         "--target=query.profbval",
         "--target=query.isis",
-        "--target=query.disis",
+        #"--target=query.disis",
         "--target=query.mdisorder",
         "--blast-processors=$blast_processors");
     push @cmd,"--force-cache-store" if $fcs;
@@ -132,7 +132,7 @@ sub predictprotein{
         chomp( $ppc_fetch_baseline );
         $ppc_fetch_baseline =~ s/in$//o;
         my @fetch;
-        push @fetch,$ppc_fetch_baseline."disis";
+        #push @fetch,$ppc_fetch_baseline."disis";
         push @fetch,$ppc_fetch_baseline."blastPsiMat";
         push @fetch,$ppc_fetch_baseline."psic";
         push @fetch,$ppc_fetch_baseline."isis";
