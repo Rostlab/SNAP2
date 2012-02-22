@@ -41,7 +41,7 @@ use RG::Snap2::Prediction;
 # popularity contest
 if( system('pp_popcon_cnt', '-p', 'snap2') == -1 ){ warn("The Rost Lab recommends you install the pp-popularity-contest package that provides pp_popcon_cnt:\n\nsudo apt-get install pp-popularity-contest\n"); }
 
-my($in,$out,$mut,$snap_cache,%snap_cache_results,%predictions,$workdir,$plot,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs,$print_version,$help,$nolookup);
+my($in,$inseq,$out,$mut,@inmut,$snap_cache,%snap_cache_results,%predictions,$workdir,$plot,$labeled_muts_file,$only_extract,@labels,$pc,$quiet,$fcs,$print_version,$help,$nolookup);
 my $debug=0;
 my $threshold=7;
 $cpu=1;
@@ -67,11 +67,13 @@ my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'use-snap-cache!' => \$use_snap_cache,
                         'snap-cache-root=s' => \$snap_cache_root,
                         'use-pp-cache!' => \$use_pp_cache,
-                        'no-lookup' => \$nolookup
+                        'no-lookup' => \$nolookup,
+                        'seq=s' => \$inseq,
+                        'mutants=s' => \@inmut
 );
 (say $version and exit(0)) if $print_version;
 die_usage("Please read the man page for more detailed information") if $help;
-die_usage("No input file defined") unless $in;
+die_usage("No input defined") unless $in || $inseq;
 die_usage("No output file defined") unless $out;
 die_usage("Unknown argument") unless $args_ok;
 
@@ -84,13 +86,14 @@ else {
 
 warn "Working directory: $workdir\n" unless $quiet;
 
-$in=Cwd::realpath($in);
+$in=Cwd::realpath($in) if $in;
 $out=Cwd::realpath($out);
 $name=fileparse($out,qr/\.[^.]*/);
 
 warn "Job name: $name\n" unless $quiet;
 
-#Read sequence file
+#Read sequence
+if ($in){
 open (FHIN,$in) || confess "\nError: unable to open sequence file: $in\n" ;
 while (<FHIN>){
     next if /^>/o;
@@ -98,6 +101,11 @@ while (<FHIN>){
     $sequence.=$_;
 }
 close FHIN;
+}
+elsif ($inseq){
+    $sequence=$inseq;
+}
+else {confess "\nError: no input sequence defined\n"}
 $sequence=~s/\s//g;
     
 #transform input into fasta sequence
@@ -143,8 +151,19 @@ elsif ($mut){
         close FHIN;
     }
 }
+elsif (@inmut){
+    @inmut=split(/,/,join(',',@inmut));
+    foreach my $mut (@inmut) {
+        confess "\nError: Invalid mutation: '$mut'\n" unless $mut=~/^[ARNDCQEGHILKMFPSTWYV]\d+[ARNDCQEGHILKMFPSTWYV]$/o;
+        push @mutants,$mut;
+    }
+    $mut="$workdir/$name.muts";
+    open MUT,">$mut" || confess "\nError: unable to write $mut\n";
+    print MUT join "\n",@mutants;
+    close MUT;
+}
 else {
-    die_usage("No mutation file defined");
+    die_usage("No mutations defined");
 }
 
 #Look for pre-computed results
@@ -276,7 +295,7 @@ sub die_usage{
     say "\nUSAGE:\nsnap2 -i <input fasta> -o <output file> -m <mutations file> [OPTIONS]";
     say "\nMANDATORY:";
     say "-i, --in <file>\n\tInput sequence in fasta format";
-    say "\n-m, --mut <file>\n\tMutation file in format: [A-Z][0-9]+[A-Z] e.g: 'A32S'. One per line";
+    say "\n-m, --muts <file>\n\tMutation file in format: [A-Z][0-9]+[A-Z] e.g: 'A32S'. One per line";
     say "\n-o, --out <file>\n\tOutput file";
     say "\nOPTIONS:";
     say "-w, --workdir <directory>\n\tWorking directory. Intermediate files will be saved here";
@@ -380,11 +399,11 @@ See example outputs in F<__docdir__/examples>.  Also see B<--print-collection>.
 
 =over
 
-=item -i
+=item --in
 
 Input file in fasta format with C<.fasta> extension.
 
-=item -m
+=item --muts
 
 Mutant file in <from><AAnumber><to> format:
 
@@ -394,7 +413,7 @@ Mutant file in <from><AAnumber><to> format:
 
 OR: Keyword 'all' will mutate every position into each of the 19 non-native amino acids. I.e.: a full mutagenesis analysis
 
-=item -o
+=item --out
 
 Output file path
 
@@ -424,11 +443,19 @@ Force snap2 to reproduce all files and store them in the cache. This is only sen
 
 Display a short usage overview
 
+=item --mutants
+
+Give mutants on command line (comma separated). E.g.: --mutants A31M,G48D
+
 =item --quiet
 
 =item --noquiet
 
 silence progress messages, default: B<--noquiet>
+
+=item --seq
+
+Input sequence on command line
 
 =item --swiss-dat
 
@@ -520,7 +547,7 @@ If this environment variable is set F<~/.snap2rc> is disregarded and the value o
 
 =head1 AUTHOR
 
-Maximilian Hecht <hecht@rostlab.org>
+Maximilian Hecht <hecht@rostlab.org> and Burkhard Rost
 
 =head1 COPYRIGHT AND LICENSE
 

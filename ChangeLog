@@ -1,23 +1,29 @@
-snapfun (1.0.3) unstable; urgency=low
+snap2 (1.0.4) unstable; urgency=low
+
+  * new command-line options
+
+ -- Maximilian Hecht <hecht@rostlab.org>  Wed, 22 Feb 2012 14:9:32 +0100
+
+snap2 (1.0.3) unstable; urgency=low
 
   * disis is no longer required
 
  -- Laszlo Kajan <lkajan@rostlab.org>  Tue, 21 Feb 2012 13:43:14 +0100
 
-snapfun (1.0.2) unstable; urgency=low
+snap2 (1.0.2) unstable; urgency=low
 
   * updated model files, fixed parallel processing bug
 
  -- Maximilian Hecht <hecht@rostlab.org>  Mon, 30 Jan 2012 14:40:52 +0100
 
-snapfun (1.0.1) unstable; urgency=low
+snap2 (1.0.1) unstable; urgency=low
 
   * Improved caching logic, added commandline parameters
   * changed default configuration
 
  -- Maximilian Hecht <hecht@rostlab.org>  Wed, 18 Jan 2012 9:49:06 +0100
 
-snapfun (1.0.0) unstable; urgency=low
+snap2 (1.0.0) unstable; urgency=low
 
   * lkajan: updated license file and man page
 
