@@ -27,9 +27,9 @@ BEGIN {
     $db_swiss=glob($config->val('data','db_swiss'));
     $big80=glob($config->val('blast','big80'));
     $phat_matrix=glob($config->val('data','phat_matrix'));
-    $cpu=glob($config->val('snap2', 'blastpgp_processors'));
-    $use_pp_cache=glob($config->val('snap2', 'use_pp_cache'));
-    $use_snap_cache=glob($config->val('snap2', 'use_snap_cache'));
+    $cpu=$config->val('snap2', 'blastpgp_processors');
+    $use_pp_cache=$config->val('snap2', 'use_pp_cache');
+    $use_snap_cache=$config->val('snap2', 'use_snap_cache');
     $snap_cache_root=glob($config->val('snap2', 'snap_cache_root')) || "";
 }
 

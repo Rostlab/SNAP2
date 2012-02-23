@@ -34,7 +34,7 @@ sub all{
     swiss($workdir,$debug);
 
     #sift prediction for all mutants
-    sift($muts,$workdir,$debug);
+    sift($muts,$workdir,$cpu,$debug);
 
     #quicksnap prediction for all 19 non-native per position
     #qsnap($name,$fasta,$workdir,$debug);
@@ -56,12 +56,12 @@ sub qsnap{
 
 }
 sub sift{
-    my ($muts,$workdir,$debug)=@_;
+    my ($muts,$workdir,$__cpu,$debug)=@_;
     my $big80=$main::big80;
     my $sift=$main::config->val('snap2','sift_exe');
 
     unless (-e "$workdir/$main::name.SIFTprediction") {
-        my $siftcall=qq|$sift '$workdir/$main::name.fasta' '$big80' '$muts' 2.75 |.( $debug ? '' : ' >/dev/null 2>&1' );
+        my $siftcall=qq|$sift '$workdir/$main::name.fasta' '$big80' '$muts' '$__cpu' |.( $debug ? '' : ' >/dev/null 2>&1' );
         local $CWD = $workdir;
         cluck "Workdir: $CWD" if $debug;
         cluck $siftcall if $debug;

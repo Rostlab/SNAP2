@@ -1,3 +1,9 @@
+snap2 (1.0.5) unstable; urgency=low
+
+  * Compatible with new sift.
+
+ -- Laszlo Kajan <lkajan@rostlab.org>  Thu, 23 Feb 2012 19:44:07 +0100
+
 snap2 (1.0.4) unstable; urgency=low
 
   * new command-line options
