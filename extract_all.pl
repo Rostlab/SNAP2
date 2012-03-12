@@ -44,7 +44,8 @@ foreach my $protein (@dir){
     print SH "/mnt/project/rost_db/src/fetchAll4Snap.pl\n";
     #print SH "export PREDICTPROTEINCONF=/mnt/project/resnap/pp_nodelocaldb_rc\n";
     #print SH "time perl /mnt/project/resnap/trunk/snap2.pl -print -q -i $inputdirectory/$protein/$protein.sequence -m all -o $out/results/$protein.snap2 --force-cache-store\n";
-    print SH "perl /mnt/project/resnap/trunk/snap2 -e -print -q -i $inputdirectory/$protein/$protein.sequence -l $inputdirectory/$protein/$protein.effect -o $inputdirectory/$protein/$protein.snap2 --workdir $inputdirectory/$protein/\n";
+    #print SH "perl /mnt/project/resnap/trunk/snap2 -e -print -q -i $inputdirectory/$protein/$protein.sequence -l $inputdirectory/$protein/$protein.effect -o $inputdirectory/$protein/$protein.snap2 --workdir $inputdirectory/$protein/\n";
+    print SH "perl /mnt/project/resnap/trunk/qsn2 -e -print -q -i $inputdirectory/$protein/$protein.sequence -l $inputdirectory/$protein/$protein.effect -o $inputdirectory/$protein/$protein.snap2 --workdir $inputdirectory/$protein/\n";
     close SH;
     my $cmd='qsub -M hecht@rostlab.org'." -o $inputdirectory/gridout -e $inputdirectory/griderr $inputdirectory/$protein/grid_$protein.sh";
     #my $cmd='qsub -M hecht@rostlab.org'." -o $out/gridout -e $out/griderr $inputdirectory/$protein/grid_$protein.sh";

@@ -118,14 +118,17 @@ sub quick{
         push @features,@aacomp,@protlength;
 
         #Sequence window
-        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,17,'VINM940103',$debug);
-        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,9,'BLAM930101',$debug);
-        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,5,'DAYM780201',$debug);
-        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,5,'QIAN880123',$debug);
-        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,13,'KLEP840101',$debug);
-        push @features,RG::Snap2::Features::sequenceprofile(\@main::sequence_array,$seqlength,$pos,9,$debug);
-        push @features,RG::Snap2::Features::potentials($seqlength,$pos,\@main::sequence_array,9,$wt,$debug);
-        push @features,RG::Snap2::Features::potentials($seqlength,$pos,\@main::sequence_array,9,$mut,$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'VINM940103',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'BLAM930101',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'DAYM780201',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'QIAN880123',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'KLEP840101',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'charge',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'hyd',$debug);
+        push @features,RG::Snap2::Features::indices($seqlength,$pos,\@main::sequence_array,7,'vol',$debug);
+        push @features,RG::Snap2::Features::sequenceprofile(\@main::sequence_array,$seqlength,$pos,7,$debug);
+        push @features,RG::Snap2::Features::potentialDiff($seqlength,$pos,\@main::sequence_array,7,$wt,$mut,$debug);
+        push @features,RG::Snap2::Features::potentialProfileDiff($wt,$mut,$debug);
 
         #Difference
         push @features,RG::Snap2::Features::indexDiff($wt,$mut,'SNEP660101',$debug);
@@ -135,7 +138,7 @@ sub quick{
         push @features,RG::Snap2::Features::indexDiff($wt,$mut,'VINM940103',$debug);
         push @features,RG::Snap2::Features::residue_representation($mut,$debug);
         push @features,RG::Snap2::Features::potentialProfileDiff($wt,$mut,$debug);
-        push @features,RG::Snap2::Features::potentialDiff($seqlength,$pos,\@main::sequence_array,9,$wt,$mut,$debug);
+        push @features,RG::Snap2::Features::potentialDiff($seqlength,$pos,\@main::sequence_array,7,$wt,$mut,$debug);
 
         #append to data array
         push (@data,\@features);

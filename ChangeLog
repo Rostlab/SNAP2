@@ -1,3 +1,10 @@
+snap2 (1.0.6) unstable; urgency=low
+
+  * removed ambiguity of -m option, improved input checking
+  * added 'tolerate' option and fallback behaviour
+
+ -- Maximilian Hecht <hecht@rostlab.org>  Mon, 12 Mar 2012 9:42:58 +0100
+
 snap2 (1.0.5) unstable; urgency=low
 
   * Compatible with new sift.

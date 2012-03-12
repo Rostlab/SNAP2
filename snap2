@@ -9,7 +9,7 @@ use File::Basename;
 use File::Path qw(make_path);
 use Carp qw(cluck :DEFAULT);
 
-our ($use_pp,$use_pp_cache,$use_snap_cache,$snap_cache_root,$allmuts,$config,$sequence,@mutants,$name,@sequence_array,$swissdb,$db_swiss,$swiss_dat,$big80,$phat_matrix,@todo);
+our ($tolerate,$use_pp,$use_pp_cache,$use_snap_cache,$snap_cache_root,$allmuts,$config,$sequence,@mutants,$name,@sequence_array,$swissdb,$db_swiss,$swiss_dat,$big80,$phat_matrix,@todo);
 my ($version,$snap2dir,$cpu);
 BEGIN {
     use Config::IniFiles;
@@ -33,10 +33,11 @@ BEGIN {
     $snap_cache_root=glob($config->val('snap2', 'snap_cache_root')) || "";
 }
 
-use RG::Snap2::Run;
 use RG::Snap2::Extract;
+use RG::Snap2::Features;
 use RG::Snap2::Predict;
 use RG::Snap2::Prediction;
+use RG::Snap2::Run;
 
 # popularity contest
 if( system('pp_popcon_cnt', '-p', 'snap2') == -1 ){ warn("The Rost Lab recommends you install the pp-popularity-contest package that provides pp_popcon_cnt:\n\nsudo apt-get install pp-popularity-contest\n"); }
@@ -55,7 +56,7 @@ my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'blast-db=s' =>\$big80,
                         'swiss-db=s' =>\$swissdb,
                         'swiss-dat=s' =>\$swiss_dat,
-                        'dbswiss=s' =>\$db_swiss,
+                        'swiss-index=s' =>\$db_swiss,
                         'print-collections' => \$pc,
                         'quiet' => \$quiet,
                         'force-cache-store' => \$fcs,
@@ -69,7 +70,8 @@ my $args_ok=GetOptions( 'in=s'    =>  \$in,
                         'use-pp-cache!' => \$use_pp_cache,
                         'no-lookup' => \$nolookup,
                         'seq=s' => \$inseq,
-                        'mutants=s' => \@inmut
+                        'tolerate' => \$tolerate,
+                        'cmdmuts=s' => \@inmut
 );
 (say $version and exit(0)) if $print_version;
 die_usage("Please read the man page for more detailed information") if $help;
@@ -122,6 +124,7 @@ if ($labeled_muts_file){
     while (<LABEL>){
         confess "\nError: Invalid mutation line: $_\n" if !/^[A-Z]\d+[A-Z]\s+\d$/o;
         my ($mut,$label)=split;
+        checkmut($mut,\@sequence_array);
         push (@mutants,$mut);
         push (@labels,$label);
     }
@@ -142,11 +145,10 @@ elsif ($mut){
     else{
         $mut=Cwd::realpath($mut);
         open (FHIN,$mut) || confess "\nError: unable to open mutations file: $mut\n";
-        while(<FHIN>){
-            #check every mutant
-            confess "\nError: Invalid mutation line: $_\n" unless /^[ARNDCQEGHILKMFPSTWYV]\d+[ARNDCQEGHILKMFPSTWYV]$/o;
-            chomp $_;
-            push (@mutants,$_);
+        while(my $mut=<FHIN>){
+            chomp $mut;
+            checkmut($mut,\@sequence_array);
+            push (@mutants,$mut);
         }
         close FHIN;
     }
@@ -154,7 +156,7 @@ elsif ($mut){
 elsif (@inmut){
     @inmut=split(/,/,join(',',@inmut));
     foreach my $mut (@inmut) {
-        confess "\nError: Invalid mutation: '$mut'\n" unless $mut=~/^[ARNDCQEGHILKMFPSTWYV]\d+[ARNDCQEGHILKMFPSTWYV]$/o;
+        checkmut($mut,\@sequence_array);
         push @mutants,$mut;
     }
     $mut="$workdir/$name.muts";
@@ -192,11 +194,19 @@ write_output($out,\@mutants,\%predictions,\%snap_cache_results,$debug) && exit(0
 
 #Run all external programs
 warn "\nRunning external programs..\n" unless $quiet;
-RG::Snap2::Run::all($mut,$workdir,$fcs,$cpu,$debug);
+my $success=RG::Snap2::Run::all($mut,$workdir,$fcs,$cpu,$debug);
 
 #Extract feature values
 warn "\nExtracting feature values..\n" unless $quiet;
-my $data=RG::Snap2::Extract::all($workdir,$debug>1 ? 1 : 0);
+my $data;
+if ($success){
+    $data=RG::Snap2::Extract::all($workdir,$debug>1 ? 1 : 0);
+}
+else {
+    warn "..tolerating failure" unless $quiet;
+    $data=RG::Snap2::Extract::quick($debug>1 ? 1 : 0);
+}
+
 
 #write out the featurefile (for training purpose, won't be used anymore afterwards)
 confess "Number of labels is not consistent with number of data points" if ($labeled_muts_file && scalar(@labels) != scalar(@$data));
@@ -212,7 +222,7 @@ exit(0) if $only_extract;
 
 #Run all the neural networks
 warn "\nRunning predictions..\n" unless $quiet;
-my %raw_pred=RG::Snap2::Predict::all($data,"$snap2dir/models",$debug>1 ? 1 : 0);
+my %raw_pred=RG::Snap2::Predict::all($data,$success ? "$snap2dir/models" : "$snap2dir/quick",$debug>1 ? 1 : 0);
 confess "Number of predictions is not consistent with number of data points" if scalar(keys %raw_pred) != scalar(@todo);
 
 #Expected accuracy as obtained from 10-fold cross-validation
@@ -289,6 +299,14 @@ sub allmuts{
     return @mutants;
 }
 
+sub checkmut{
+    my ($mut,$seq_arr)=@_;
+    confess "\nError: Invalid mutation: '$mut'\n" unless $mut=~/^[ARNDCQEGHILKMFPSTWYV]\d+[ARNDCQEGHILKMFPSTWYV]$/o;
+    my ($wt,$pos,$sub)=RG::Snap2::Features::wt_pos_mut($mut);
+    my $seqwt=$seq_arr->[$pos-1];
+    confess "\nError: Mutation origin '$wt' in '$mut' does not correspond to amino acid in sequence. Sequence has '$seqwt' at position '$pos'\n" unless ($seqwt eq $wt);
+}
+
 sub die_usage{
     my $msg=shift;
     say "\nDESCRIPTION:\nPredict functional effect of non-synonymous single nucleotide polymorphisms";
@@ -304,7 +322,9 @@ sub die_usage{
     say "\n-p, --print-collections\n\tAlso print the raw outputs for each network";
     say "\n-q, --quiet\n\tSilence announcements";
     say "\n-d, --debug\n\tPrint debugging messages. Use twice to increase level of debugging messages";
-    say "\n-c, --cpus\n\tNumber of cpu cores";
+    say "\n--cpus\n\tNumber of cpu cores";
+    say "\n--cmdmuts <mutants>\n\tGive mutants on command line, comma separated. E.g: --cmdmuts A32S,M38A,G42Y";
+    say "\n--seq <sequence>\n\tGive sequence on command line";
     die "\n$msg\n";
 }
 
@@ -425,7 +445,7 @@ Path to blast database (formatted with formatdb)
 
 Number of processors (cores) to use. Default: I<1>.
 
-=item --dbswiss
+=item --swiss-index
 
 Path to dbswiss index file (generated by librg-utils-perl)
 
@@ -443,9 +463,9 @@ Force snap2 to reproduce all files and store them in the cache. This is only sen
 
 Display a short usage overview
 
-=item --mutants
+=item --cmdmuts
 
-Give mutants on command line (comma separated). E.g.: --mutants A31M,G48D
+Give mutants on command line (comma separated). E.g.: --cmdmuts A31M,G48D
 
 =item --quiet
 

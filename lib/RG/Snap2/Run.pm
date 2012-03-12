@@ -28,16 +28,17 @@ sub all{
         $pm->wait_all_children;
     }
     else{
-        reprof($muts,$workdir,$debug);
+        return 0 unless reprof($muts,$workdir,$debug);
     }
     #blast against swissprot
-    swiss($workdir,$debug);
+    return 0 unless swiss($workdir,$debug);
 
     #sift prediction for all mutants
-    sift($muts,$workdir,$cpu,$debug);
+    return 0 unless sift($muts,$workdir,$cpu,$debug);
 
     #quicksnap prediction for all 19 non-native per position
     #qsnap($name,$fasta,$workdir,$debug);
+    return 1;
 }
 sub qsnap{
     my ($name,$in,$workdir,$debug)=@_;
@@ -65,10 +66,11 @@ sub sift{
         local $CWD = $workdir;
         cluck "Workdir: $CWD" if $debug;
         cluck $siftcall if $debug;
-        system($siftcall) && confess "'$siftcall' failed: ".($?>>8);
+        system($siftcall) && ($main::tolerate ? return 0 : confess "'$siftcall' failed: ".($?>>8));
         #do we want to fail if sift fails? if not we can just use an empty sift file
         #system($siftcall) && `touch $workdir/$main::name.SIFTprediction`
     }
+    return 1;
 
 }
 sub swiss{
@@ -79,8 +81,9 @@ sub swiss{
 	unless (-e "$workdir/$main::name.blastswiss"){
 		my $cmd=qq|$blast -i '$workdir/$main::name.fasta' -d '$swissdb' -e 0.001 -o '$workdir/$main::name.blastswiss'|.( $debug ? '' : ' >/dev/null 2>&1' );
 		cluck $cmd if $debug;
-		system ($cmd) && unlink("$workdir/$main::name.blastswiss") and confess "'$cmd' failed: ".($?>>8);
+		system ($cmd) && unlink("$workdir/$main::name.blastswiss") and ($main::tolerate ? return 0 :confess "'$cmd' failed: ".($?>>8));
 	}
+    return 1;
 }
 
 sub reprof{
@@ -90,8 +93,9 @@ sub reprof{
    unless (-e "$workdir/$main::name.reprof"){
        my $cmd = "$prof -i $workdir/$main::name.blastPsiMat -o $workdir/$main::name.reprof -mutations $muts".($debug ? '' : '>/dev/null 2>&1');
        cluck $cmd if $debug;
-        system ($cmd) &&  confess "'$cmd' failed: ".($?>>8);
+        system ($cmd) &&  ($main::tolerate ? return 0 :confess "'$cmd' failed: ".($?>>8));
    } 
+   return 1;
 }
     
 sub predictprotein{
@@ -115,7 +119,7 @@ sub predictprotein{
     push @cmd,"--force-cache-store" if $fcs;
     push @cmd,"--output-dir=$workdir" unless $main::use_pp_cache;
     cluck(@cmd) if $debug;
-    system(@cmd) && confess "Failed to execute '@cmd': ".($?>>8);
+    system(@cmd) && ($main::tolerate ? return 0 : confess "Failed to execute '@cmd': ".($?>>8));
 
     if ($main::use_pp_cache){
         open( my $ph, '-|', 'ppc_fetch', '--seqfile', "$workdir/$main::name.fasta" ) || confess( "failed to open pipe: $!" );
@@ -153,11 +157,16 @@ sub predictprotein{
             my ($fname,$base,$ext)=fileparse($_,qr/\.[^.]*/);
             my @cmd=("mv","$_","$workdir/$main::name"."$ext");
             cluck(@cmd) if $debug;
-            system(@cmd) && confess "Failed to execute '@cmd': ".($?>>8);
+            system(@cmd) && ($main::tolerate ? return 0 : confess "Failed to execute '@cmd': ".($?>>8));
             
         }
     }
 
+    chomp(my $checkpsic=`head -1 $workdir/$main::name.psic`);
+    if ($checkpsic eq "blastpgp: No hits found") {
+        $main::tolerate ? return 0 : confess "$checkpsic for PSIC"; 
+    }
+    return 1;
 }
 
 
