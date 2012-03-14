@@ -34,7 +34,7 @@ say "\nAt best threshold $best_threshold:\n" . join "\n",pairwise {"$a: $b"} @de
 say join " ","ROC AUCs",$measure->aucs($data);
 say join " ","PR AUCs",$measure->pr_aucs($pr_data);
 my $ri_data=[];
-$p->reliabilities(0,0.9,0.1,$best_threshold,$ri_data);
+$p->reliabilities(0,9,1,$best_threshold,$ri_data);
 if ($plot){
     roc_plot($data,800,600,$plot."_ROC");
     neg_pr_plot($pr_data,800,600,$plot."_neg_PR");

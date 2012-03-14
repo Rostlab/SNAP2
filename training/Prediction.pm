@@ -149,7 +149,7 @@ sub measures{
     #say join " ", $q2,$acc_non,$cov_non,$acc_neu,$cov_neu;
     return $q2,$acc_non,$cov_non,$acc_neu,$cov_neu;
 }
-sub at_ri{
+sub above_ri{
     my ($self,$ri,$threshold)=@_;
     my $total=scalar( $self->predictions() );
     confess "Inconsistent number of labels and predictions" if $total != scalar($self->labels());
@@ -191,6 +191,48 @@ sub at_ri{
     my $cov_neu=$tn/max(1,($tn+$fp)); #Neutral coverage = Specificity
     return $count/$total,$acc_non,$cov_non,$acc_neu,$cov_neu;
 }
+sub at_ri{
+    my ($self,$ri,$threshold)=@_;
+    my $total=scalar( $self->predictions() );
+    confess "Inconsistent number of labels and predictions" if $total != scalar($self->labels());
+    my $tp=0;
+    my $fp=0;
+    my $tn=0;
+    my $fn=0;
+    my $count=0;
+    foreach my $i (0..$total-1) {
+        my $sum = $self->{predictions}[$i][1] - $self->{predictions}[$i][0];
+        next if abs(int(10*$sum))!=$ri;
+        $count++;
+        my $pred=0;
+        $pred=1 if $sum > $threshold;
+
+        #true
+        #positives
+        if ($pred == 1 && $self->{labels}[$i][1] == 1){
+            $tp++;
+        }
+        #negatives
+        elsif ($pred == 0 && $self->{labels}[$i][1] == 0){
+            $tn++;
+        }
+        #false
+        #positives
+        elsif ($pred == 1 && $self->{labels}[$i][1] == 0){
+            $fp++;
+        }
+        #negatives
+        elsif ($pred == 0 && $self->{labels}[$i][1] == 1){
+            $fn++;
+        }
+        else { die "failed to build confusion matrix" }
+    }
+    my $acc_non=$tp/max(1,($tp+$fp)); #Non-neutral accuracy = Positive predictive value = Precision
+    my $cov_non=$tp/max(1,($tp+$fn)); #Non-neutral coverage = Sensitivity = Recall
+    my $acc_neu=$tn/max(1,($tn+$fn)); #Neutral accuracy = Negative predictive value
+    my $cov_neu=$tn/max(1,($tn+$fp)); #Neutral coverage = Specificity
+    return $count/$total,$acc_non,$cov_non,$acc_neu,$cov_neu;
+}
 sub reliabilities{
     my ($self,$min,$max,$step,$threshold,$data)=@_;
     for (my $ri = $min; $ri <=$max; $ri+=$step) {
@@ -202,6 +244,7 @@ sub reliabilities{
             push @{$data->[2]},$cov_non;
             push @{$data->[3]},$acc_neu;
             push @{$data->[4]},$cov_neu;
+            print "$ri - $perc - $acc_non - $acc_neu\n";
         }
     }
 }
