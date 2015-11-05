@@ -1,6 +1,6 @@
 # SNAP2
 
-SNAP2 is a method that predicts the effects of single amino acid substitutions in a protein on the protein's function using neural networks. A webservice is currently provided by the Rostlab (https://rostlab.org/services/snap/).
+SNAP2 is a method that predicts the effects of single amino acid substitutions in a protein on the protein's function using neural networks. A webservice is currently provided by the Rostlab (https://rostlab.org/services/snap/ and https://rostlab.org/services/snap2web/).
 The development by Maximilian Hecht started in November 2011.
 Perl is used as development language.
 
@@ -30,7 +30,7 @@ The software is licensed under a Academic Software License Agreement (https://ro
 
 ## HOWTO Use the webservice
 
-The service can be accesses on https://rostlab.org/services/snap/.
+The service can be accessed via https://rostlab.org/services/snap/ and https://rostlab.org/services/snap2web/.
 (Exactly) One protein sequence in the Fasta format can be pasted into the textfield. Upon submission via `Run Prediction`, a popup shows up, presenting an adress, which leads to the result page, once the calculations are done.
 
 The Results page shows a heatmap with the input sequence along the x-axis and all 20 possible amino acid exchanges at every position along the y-axis. Below the heatmap, the color code for the heatmap is presented. Red indicates an effect of the respective amino acid exchange, wheras blue predicts the exchange to be neutral with respect to the proteins function.
