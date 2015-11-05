@@ -28,6 +28,26 @@ The software is licensed under a Academic Software License Agreement (https://ro
 
 ## HOWTO Install
 
+### Ubuntu/Debian
+according to https://rostlab.org/owiki/index.php/Debian_repository
+
+sudo apt-get install python-software-properties
+sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
+sudo apt-get update (ignore GPG error)
+sudo apt-get install rostlab-debian-keyring (without verification)
+sudo apt-get update
+sudo apt-get install <PACKAGE> where <PACKAGE> is the package you want to install (e.g. 'profphd')
+
+=> missing dependency error
+```
+The following packages have unmet dependencies:
+ snap2 : Depends: sift (>= 4.0.3b)
+```
+* download from http://sift.jcvi.org/www/www/sift4.0.3b.tar.gz
+* untar package with `tar -zxvf sift4.0.3b.tar.gz -C $sift` where `$sift` is an empty directory
+* move the linux executables to the correct location `mv $sift/bin/linux/* $sift/bin/`
+* csh missing -> install csh `sudo apt-get install csh`
+
 ## HOWTO Use the webservice
 
 The service can be accessed via https://rostlab.org/services/snap/ and https://rostlab.org/services/snap2web/.
@@ -73,7 +93,6 @@ Maximilian Hecht
 
 ## Evaluation
 
-
 ## 'git svn clone' HOWTO
 
 The software was initially developed, using svn as versioning tool. In scope of the exercises of the course Protein Prediction II for Computer Scientists in October 2015, the svn repository was moved to github, checked for updates and inconsistencies and its documentation updated. In the following, all necessary steps to clone the svn repository to github are documented.
@@ -98,6 +117,47 @@ The software was initially developed, using svn as versioning tool. In scope of 
   * `rm -Rf .git/refs/remotes`
 * add local git repository to remote repository with `git remote add origin git@github.com:Rostlab/SNAP2.git`
 * push to remote by `git push origin --all`
+
+## Testing on various platforms using VM
+
+### Requirements (tested on Mac OS X 10.10.)
+* Vagrant (tested with 1.7.4)
+* VirtualBox ~~(tested with 4.3.2)~~ (not running with 4.3.2, tested with 5.0.8)
+* local git repository directory called `$gitlocal` (so that the vagrant machines can be shared with co-developers)
+
+### Procedure
+* enforce requirements
+* move to local git root `cd $gitlocal`
+* initialize vagrant
+  * `vagrant init`
+  * a `Vagrantfile` is initialized
+* download the virtual machine image you want to use
+  * https://atlas.hashicorp.com/ provides a great number of machines
+  * the machines listed in the table below were tested
+  * use `vagrant box add $image`, whereas `$image` is of the format `debian/wheezy64`
+  * you will be asked for the provider of your choice. select yours (tested with virtualBox)
+  * this may take a while ...
+* setup the downloaded box as box to be used by the provider on startup, by editing `Vagrantfile` s.t. it contains
+```
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/wheezy64"
+end
+```
+* run the machine with `vagrant up`
+* the content of the folder, vagrant was initialized in will be provided on the VM under `/vagrant`
+
+
+### Virtual Machines
+
+The following machines were tested with Vagrant and VirtualBox on MacOS X 10.10.
+Installation and execution of SNAp2 was successfully tested on these machines.
+For detailed installation and execution procedures, please refer to *HOWTO Install* and *HOWTO Run*.
+
+| OS | Version | 32/64 bit | hashicorp name |
+|----|---------|-----------|----------------|
+|Debian|7 "wheezy"|64|debian/wheezy64|
+|||||
+
 
 ## Old README from Maximilian Hecht
 
