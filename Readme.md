@@ -28,7 +28,7 @@ The software is licensed under a Academic Software License Agreement (https://ro
 
 ## HOWTO Install
 
-## HOWTO use the webservice
+## HOWTO Use the webservice
 
 The service can be accesses on https://rostlab.org/services/snap/.
 (Exactly) One protein sequence in the Fasta format can be pasted into the textfield. Upon submission via `Run Prediction`, a popup shows up, presenting an adress, which leads to the result page, once the calculations are done.
