@@ -27,26 +27,143 @@ The software is licensed under a Academic Software License Agreement (https://ro
 * swiss_dat
 
 ## HOWTO Install
+Installation routine according to https://rostlab.org/owiki/index.php/Debian_repository
 
-### Ubuntu/Debian
-according to https://rostlab.org/owiki/index.php/Debian_repository
+* sudo apt-get install python-software-properties
+* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
+* sudo apt-get update (ignore GPG error)
+* sudo apt-get install rostlab-debian-keyring (without verification)
+* sudo apt-get update
+* sudo apt-get install <PACKAGE> where <PACKAGE> is the package you want to install (e.g. 'profphd')
 
-sudo apt-get install python-software-properties
-sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
-sudo apt-get update (ignore GPG error)
-sudo apt-get install rostlab-debian-keyring (without verification)
-sudo apt-get update
-sudo apt-get install <PACKAGE> where <PACKAGE> is the package you want to install (e.g. 'profphd')
+### Debian Wheezy (7)
 
-=> missing dependency error
+* sudo apt-get install python-software-properties
+* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
+* sudo apt-get update
+* sudo apt-get install rostlab-debian-keyring
+* sudo apt-get update
+* sudo apt-get install snap2
+
+leads to missing dependency error
 ```
 The following packages have unmet dependencies:
  snap2 : Depends: sift (>= 4.0.3b)
 ```
+
+tried several workarounds, e.g:
 * download from http://sift.jcvi.org/www/www/sift4.0.3b.tar.gz
 * untar package with `tar -zxvf sift4.0.3b.tar.gz -C $sift` where `$sift` is an empty directory
 * move the linux executables to the correct location `mv $sift/bin/linux/* $sift/bin/`
 * csh missing -> install csh `sudo apt-get install csh`
+all failed
+
+### Ubuntu Precise (12.4)
+Installation routine
+* sudo apt-get update
+* sudo apt-get install python-software-properties
+* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
+* sudo apt-get update
+* sudo apt-get install rostlab-debian-keyring
+* sudo apt-get update
+* sudo apt-get install snap2
+
+leads to output
+```
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+ snap2 : Depends: predictprotein but it is not going to be installed
+         Depends: reprof but it is not installable
+         Depends: sift (>= 4.0.3b) but it is not installable
+E: Unable to correct problems, you have held broken packages.
+```
+
+Installing dependency packages also fails with the same error, fetching their source code (`sudo apt-get source reprof`) works in some cases, but does not improve anything (of course (just have been interested in)).
+
+### Debian Squeeze (6)
+Installation routine
+* sudo apt-get update
+* sudo apt-get install python-software-properties -> useless see below
+* sudo apt-get install --fix-missing python-software-properties -> because of smaller errors
+* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free" -> apt-add-repo not known
+* sudo echo "deb http://rostlab.org/debian/ stable main contrib non-free\ndeb http://rostlab.org/debian/ stable main contrib non-free" >> /etc/apt/sources.list
+* sudo apt-get update
+* sudo apt-get install rostlab-debian-keyring
+* sudo apt-get update
+* sudo apt-get install snap2
+
+leads to 
+```
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+ snap2 : Depends: libai-fann-perl but it is not installable
+         Depends: predictprotein but it is not going to be installed
+         Depends: reprof but it is not installable
+         Depends: sift (>= 4.0.3b) but it is not installable
+         Recommends: pp-popularity-contest but it is not installable
+E: Broken packages
+```
+
+### Debian Wheezy (7) try 2
+
+install essentials and add rostlab repository
+* cd ~
+* sudo apt-get update
+* sudo apt-get install csh vim wget build-essential devscripts debhelper python-software-properties
+* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
+* sudo apt-get update
+* sudo apt-get install rostlab-debian-keyring
+* sudo apt-get update
+
+install blimps the hard way
+* wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9-1.dsc
+* wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9.orig.tar.gz
+* wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9-1.debian.tar.gz
+* tar xzvf blimps_3.9.orig.tar.gz
+* tar xzvf blimps_3.9-1.debian.tar.gz
+* mv debian blimps-3.9/
+* mv blimps_3.9-1.dsc  blimps-3.9/
+* cd blimps-3.9
+* debuild -us -uc
+* dpkg-source --commit
+* -> add dsc -> ctrl+o -> return -> ctrl+x
+* debuild -us -uc
+* cd ..
+* sudo dpkg -i \*blimps\*.deb
+
+install sift the hard way
+* wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b-4.debian.tar.gz
+* wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b-4.dsc
+* wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b.orig.tar.gz
+* tar xzvf sift_4.0.3b.orig.tar.gz
+* mv sift_4.0.3b-4.dsc sift4.0.3b/
+* tar xzvf sift_4.0.3b-4.debian.tar.gz
+* mv debian sift4.0.3b/
+* cd sift4.0.3b/
+* dpkg-source --commit
+* -> add dsc -> ctrl+o -> return -> ctrl+x
+* debuild -us -uc
+* cd ..
+* sudo dpkg -i sift*.deb
+
+install snap2 via aptitude
+* sudo apt-get install snap2
 
 ## HOWTO Use the webservice
 
