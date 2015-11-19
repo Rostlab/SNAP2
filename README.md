@@ -249,9 +249,12 @@ The software was initially developed, using svn as versioning tool. In scope of 
 ### Procedure
 * enforce requirements
 * move to local git root `cd $gitlocal`
+* create a `.gitignore` file if it does not exist already
+* put the folder `.vagrant` in the `.gitignore` file to allow the usage by different users
 * initialize vagrant
   * `vagrant init`
   * a `Vagrantfile` is initialized
+  * a folder `.vagrant`is initialized
 * download the virtual machine image you want to use
   * https://atlas.hashicorp.com/ provides a great number of machines
   * the machines listed in the table below were tested
