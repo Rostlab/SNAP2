@@ -165,6 +165,10 @@ install sift the hard way
 install snap2 via aptitude
 * sudo apt-get install snap2
 
+## HOWTO get databases
+
+## HOWTO configure and run the tool
+
 ## HOWTO Use the webservice
 
 The service can be accessed via https://rostlab.org/services/snap/ and https://rostlab.org/services/snap2web/.
