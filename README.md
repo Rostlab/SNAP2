@@ -165,9 +165,61 @@ install sift the hard way
 install snap2 via aptitude
 * sudo apt-get install snap2
 
-## HOWTO get databases
+## HOWTO get and configure databases
 
-## HOWTO configure and run the tool
+Ensure that there is enough space on your (virtual) machine. Depending on the type of database you want to use, you will need up to 110 GB disk space. If you initialized a vagrant box with default settings, you might want to use an external hard drive and forward it to the virtual machine. On the tested System (Mac OS X 10.10 and debain/wheezy64 in box), USB port forwarding was disabled an not possible to be used. To use the Hard drive as shared folder confige the virtualmachine in `Vagrantfile` as follows, whereas `$host_folder_path` and `$guest_folder_path` are the folders on the respective systems:
+
+```
+Vagrant.configure(2) do |config|
+	config.vm.synced_folder "$host_folder_path", "$guest_folder_path"
+end
+```
+
+Then download and unzip the single databases to the folder of your choice (`cd $guest_folder_path`).
+
+swiss_dat
+```
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/knowledgebase/uniprot_sprot.dat.gz
+gunzip uniprot_sprot.dat.gz
+```
+
+uniref100, uniref90, swissprot
+```
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref100/uniref100.fasta.gz
+gunzip uniref100.fasta.gz
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/uniref90.fasta.gz
+gunzip uniref90.fasta.gz
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/knowledgebase/uniprot_sprot.fasta.gz
+gunzip uniprot_sprot.fasta.gz
+```
+
+generate db_swiss:
+```
+/usr/share/librg-utils-perl/dbSwiss --datadir ./ --infile ./uniprot_sprot.dat --table dbswiss
+```
+
+format fasta databases for use with blast
+```
+formatdb -i uniref100.fasta
+formatdb -i uniref90.fasta
+formatdb -i uniprot_sprot.fasta
+```
+	   
+## HOWTO configure the tool
+There is a config file, containing all necessary data in `/usr/share/snap2/snap2rc.default`. Copy that file to your homefolder and chang its contents to adjust the settings.
+
+```
+cp /usr/share/snap2/snap2rc.default ~/.snap2rc
+vim ~/.snap2rc
+```
+
+Most default settings are ok, but check the last paragraphs. They should state the locations of the recently downloaded databases. Edit the file to your needs, e.g.
+
+```
+```
+
+## HOWTO run the tool
+
 
 ## HOWTO Use the webservice
 
