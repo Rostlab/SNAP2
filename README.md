@@ -6,7 +6,7 @@ Perl is used as development language.
 
 ## License
 
-The software is licensed under a Academic Software License Agreement (https://rostlab.org/owiki/index.php/Academic_Software_License_Agreement).
+The software is licensed under an Academic Software License Agreement (https://rostlab.org/owiki/index.php/Academic_Software_License_Agreement).
 
 ## Dependencies
 
@@ -146,7 +146,7 @@ E: Broken packages
 
 ## HOWTO get and configure databases
 
-Ensure that there is enough space on your (virtual) machine. Depending on the type of database you want to use, you will need up to 110 GB disk space. If you initialized a vagrant box with default settings, you might want to use an external hard drive and forward it to the virtual machine. On the tested System (Mac OS X 10.10 and debain/wheezy64 in box), USB port forwarding was disabled an not possible to be used. To use the Hard drive as shared folder confige the virtualmachine in `Vagrantfile` as follows, whereas `$host_folder_path` and `$guest_folder_path` are the folders on the respective systems:
+Ensure that there is enough space on your (virtual) machine. Depending on the type of database you want to use, you will need up to 110 GB disk space. If you initialized a vagrant box with default settings, you might want to use an external hard drive and forward it to the virtual machine. On the tested System (Mac OS X 10.10 and debain/wheezy64 in box), USB port forwarding was disabled and not possible to be used. To use the Hard drive as shared folder configure the virtualmachine in `Vagrantfile` as follows, whereas `$host_folder_path` and `$guest_folder_path` are the folders on the respective systems:
 
 ```
 Vagrant.configure(2) do |config|
@@ -185,7 +185,7 @@ formatdb -i uniprot_sprot.fasta
 ```
 	   
 ## HOWTO configure the tool
-There is a config file, containing all necessary data in `/usr/share/snap2/snap2rc.default`. Copy that file to your homefolder and chang its contents to adjust the settings.
+There is a config file, containing all necessary data in `/usr/share/snap2/snap2rc.default`. Copy that file to your homefolder and change its contents to adjust the settings.
 
 ```
 cp /usr/share/snap2/snap2rc.default ~/.snap2rc
@@ -205,11 +205,11 @@ Most default settings are ok, but check the last paragraphs. They should state t
 The service can be accessed via https://rostlab.org/services/snap/ and https://rostlab.org/services/snap2web/.
 (Exactly) One protein sequence in the Fasta format can be pasted into the textfield. Upon submission via `Run Prediction`, a popup shows up, presenting an adress, which leads to the result page, once the calculations are done.
 
-The Results page shows a heatmap with the input sequence along the x-axis and all 20 possible amino acid exchanges at every position along the y-axis. Below the heatmap, the color code for the heatmap is presented. Red indicates an effect of the respective amino acid exchange, wheras blue predicts the exchange to be neutral with respect to the proteins function.
+The result page shows a heatmap with the input sequence along the x-axis and all 20 possible amino acid exchanges along the y-axis. Below the heatmap, the color code for the heatmap is presented. Red indicates an effect of the respective amino acid exchange, whereas blue predicts the exchange to be neutral with respect to the proteins function.
 
 A sliding window enables the user to zoom into the heatmap. The zoom area is shown below the interpretation scale. Further down, a table presents all possible amiono acid exchanges at every position with the exact numerical scores and estimated accuracy.
 
-For detailed informations about the method, its results and interpretations, refer to the method description below.
+For detailed information about the method, its results, and interpretations, refer to the method description below.
 
 ## HOWTO Run, Basics
 
