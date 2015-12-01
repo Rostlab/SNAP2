@@ -146,7 +146,7 @@ E: Broken packages
 
 ## HOWTO get and configure databases
 
-Ensure that there is enough space on your (virtual) machine. Depending on the type of database you want to use, you will need up to 110 GB disk space. If you initialized a vagrant box with default settings, you might want to use an external hard drive and forward it to the virtual machine. On the tested System (Mac OS X 10.10 and debain/wheezy64 in box), USB port forwarding was disabled and not possible to be used. To use the Hard drive as shared folder configure the virtualmachine in `Vagrantfile` as follows, whereas `$host_folder_path` and `$guest_folder_path` are the folders on the respective systems:
+Complete these steps after installing SNAP2 (on your VM). Ensure that there is enough space on your (virtual) machine. Depending on the type of database you want to use, you will need up to 110 GB disk space. If you initialized a vagrant box with default settings, you might want to use an external hard drive and forward it to the virtual machine. On the tested System (Mac OS X 10.10 and debain/wheezy64 in box), USB port forwarding was disabled and not possible to be used. To use the hard drive as shared folder, configure the virtualmachine in `Vagrantfile` (on your local machine) as follows, whereas `$host_folder_path` and `$guest_folder_path` are the folders on the local and virtual system, respectively:
 
 ```
 Vagrant.configure(2) do |config|
@@ -154,7 +154,7 @@ Vagrant.configure(2) do |config|
 end
 ```
 
-Then download and unzip the single databases to the folder of your choice (`cd $guest_folder_path`).
+Then download and unzip the single databases to the folder of your choice on your local machine (`cd $host_folder_path`):
 
 swiss_dat
 ```
@@ -177,7 +177,7 @@ generate db_swiss:
 /usr/share/librg-utils-perl/dbSwiss --datadir ./ --infile ./uniprot_sprot.dat --table dbswiss
 ```
 
-format fasta databases for use with blast
+format fasta databases for use with blast on the virtual machine if used (`formatdb`was already installed as a dependency of SNAP2)
 ```
 formatdb -i uniref100.fasta
 formatdb -i uniref90.fasta
