@@ -41,7 +41,7 @@ Installation routine according to https://rostlab.org/owiki/index.php/Debian_rep
 install essentials and add rostlab repository
 * cd ~
 * sudo apt-get update
-* sudo apt-get install csh vim wget build-essential devscripts debhelper python-software-properties
+* sudo apt-get install csh vim wget build-essential devscripts debhelper devscripts python-software-properties
 * sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
 * sudo apt-get update
 * sudo apt-get install rostlab-debian-keyring
@@ -56,7 +56,6 @@ install blimps the hard way
 * mv debian blimps-3.9/
 * mv blimps_3.9-1.dsc  blimps-3.9/
 * cd blimps-3.9
-* debuild -us -uc
 * dpkg-source --commit
 * -> add a patch name -> ctrl+o -> return -> ctrl+x
 * debuild -us -uc
