@@ -1,16 +1,15 @@
 # SNAP2
 
 SNAP2 is a method that predicts the effects of single amino acid substitutions in a protein on the protein's function using neural networks. A webservice is currently provided by the Rostlab (https://rostlab.org/services/snap/ and https://rostlab.org/services/snap2web/).
-The development by Maximilian Hecht started in November 2011.
-Perl is used as development language.
+The implementation started in November 2011 by Maximilian Hecht. Perl is the programming language.
 
 ## License
 
-The software is licensed under an Academic Software License Agreement (https://rostlab.org/owiki/index.php/Academic_Software_License_Agreement).
+The software is licensed under an [Academic Software License Agreement](https://rostlab.org/owiki/index.php/Academic_Software_License_Agreement).
 
 ## Dependencies
 
-### Software 
+### Software
 * blast2
 * libai-fann-perl
 * libfile-chdir-perl
@@ -123,7 +122,7 @@ Installation routine
 * sudo apt-get update
 * sudo apt-get install snap2
 
-leads to 
+leads to
 ```
 Reading package lists... Done
 Building dependency tree
@@ -182,7 +181,7 @@ formatdb -i uniref100.fasta
 formatdb -i uniref90.fasta
 formatdb -i uniprot_sprot.fasta
 ```
-	   
+
 ## HOWTO configure the tool
 There is a config file, containing all necessary data in `/usr/share/snap2/snap2rc.default`. Copy that file to your homefolder and change its contents to adjust the settings.
 
@@ -337,4 +336,3 @@ How to obtain databases for snap2?
             + ftp://ftp.uniprot.org/pub/databases/uniprot/knowledgebase/uniprot_sprot.fasta.gz
         2: gunzip downloaded file
         3: Use formatdb to format *.fasta file for BLAST
-
