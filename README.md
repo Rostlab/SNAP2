@@ -209,8 +209,6 @@ vim ~/.snap2rc
 
 Most default settings are ok, but check the last paragraphs. They should state the locations of the recently downloaded databases. Edit the file to your needs, e.g.
 
-```
-```
 
 ## HOWTO run the tool
 
