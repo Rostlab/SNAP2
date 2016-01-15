@@ -99,13 +99,16 @@ sudo apt-get install snap2
 
 ### Ubuntu Precise (12.4) (not running yet)
 Installation routine
-* sudo apt-get update
-* sudo apt-get install python-software-properties
-* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
-* sudo apt-get update
-* sudo apt-get install rostlab-debian-keyring
-* sudo apt-get update
-* sudo apt-get install snap2
+
+```shell
+sudo apt-get update
+sudo apt-get install python-software-properties
+sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
+sudo apt-get update
+sudo apt-get install rostlab-debian-keyring
+sudo apt-get update
+sudo apt-get install snap2
+```
 
 leads to output:
 ```
@@ -129,15 +132,18 @@ Installing dependency packages also fails with the same error, fetching their so
 
 ### Debian Squeeze (6) (not running yet)
 Installation routine
-* sudo apt-get update
-* sudo apt-get install python-software-properties -> useless see below
-* sudo apt-get install --fix-missing python-software-properties -> because of smaller errors
-* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free" -> apt-add-repo not known
-* sudo echo "deb http://rostlab.org/debian/ stable main contrib non-free\ndeb http://rostlab.org/debian/ stable main contrib non-free" >> /etc/apt/sources.list
-* sudo apt-get update
-* sudo apt-get install rostlab-debian-keyring
-* sudo apt-get update
-* sudo apt-get install snap2
+
+```shell
+sudo apt-get update
+sudo apt-get install python-software-properties -> useless see below
+sudo apt-get install --fix-missing python-software-properties -> because of smaller errors
+sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free" -> apt-add-repo not known
+sudo echo "deb http://rostlab.org/debian/ stable main contrib non-free\ndeb http://rostlab.org/debian/ stable main contrib non-free" >> /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get install rostlab-debian-keyring
+sudo apt-get update
+sudo apt-get install snap2
+```
 
 leads to:
 ```
