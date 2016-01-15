@@ -9,7 +9,7 @@ The software is licensed under an [Academic Software License Agreement](https://
 
 ## HOWTO Install
 
-The recommended and tested environment is **Debian Wheezy (7)**. See [the wiki](https://github.com/Rostlab/SNAP2/wiki/Installation-and-Environments) for instructions on other environments and more details about the installation process and dependencies.
+The recommended and tested environment is **Debian Wheezy (7)**. See [the wiki](https://github.com/Rostlab/SNAP2/wiki/Installation-and-Environments) for instructions on other environments and more details about the installation process and dependencies. Furthermore, see [these wiki page](https://github.com/Rostlab/SNAP2/wiki/Testing-on-various-platforms-using-VM) for on instructions on how to set up a virtual machine if needed.
 
 Install essentials and add rostlab repository:
 
