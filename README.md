@@ -66,7 +66,7 @@ sudo apt-get install snap2
 ```
 
 
-## HOWTO get and configure databases
+### HOWTO get and configure databases
 
 Complete these steps after installing SNAP2 (on your VM). Ensure that there is enough space on your (virtual) machine. Depending on the type of database you want to use, you will need up to 110 GB disk space. If you initialized a vagrant box with default settings, you might want to use an external hard drive and forward it to the virtual machine. On the tested System (Mac OS X 10.10 and debain/wheezy64 in box), USB port forwarding was disabled and not possible to be used. To use the hard drive as shared folder, configure the virtualmachine in `Vagrantfile` (on your local machine) as follows, whereas `$host_folder_path` and `$guest_folder_path` are the folders on the local and virtual system, respectively:
 
@@ -106,7 +106,8 @@ formatdb -i uniref90.fasta
 formatdb -i uniprot_sprot.fasta
 ```
 
-## HOWTO configure the tool
+### HOWTO configure the tool
+
 There is a config file, containing all necessary data in `/usr/share/snap2/snap2rc.default`. Copy that file to your homefolder and change its contents to adjust the settings.
 
 ```
@@ -117,10 +118,10 @@ vim ~/.snap2rc
 Most default settings are ok, but check the last paragraphs. They should state the locations of the recently downloaded databases. Edit the file to your needs, e.g.
 
 
-## HOWTO run the tool
+## HOWTO Run
 
 
-## HOWTO Use the webservice
+### HOWTO Use the Web Service
 
 The service can be accessed via https://rostlab.org/services/snap/ and https://rostlab.org/services/snap2web/.
 (Exactly) One protein sequence in the Fasta format can be pasted into the textfield. Upon submission via `Run Prediction`, a popup shows up, presenting an adress, which leads to the result page, once the calculations are done.
@@ -131,12 +132,15 @@ A sliding window enables the user to zoom into the heatmap. The zoom area is sho
 
 For detailed information about the method, its results, and interpretations, refer to the method description below.
 
-## HOWTO Run, Basics
+### HOWTO Use the CLI Tool
 
 * Input: Fasta Protein Sequence
 * Output: Prediction Score between -100 (neutral) and 100 (effect) for every possible SNP at every position
-* Expected Results
+* Expected Results `TODO`
 * ...
+
+`TODO` missing more information and a full example for how to run the cli tool
+
 
 ## Method Description
 
@@ -151,6 +155,7 @@ For detailed information about the method, its results, and interpretations, ref
 ### Training / Test data
 
 * 100000 variants from OMIM, PMD and enzyme.expasy.org
+* `TODO` more info?
 
 
 ### Publications and other Resources
