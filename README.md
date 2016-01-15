@@ -10,6 +10,7 @@ The software is licensed under an [Academic Software License Agreement](https://
 ## Dependencies
 
 ### Software
+
 * blast2
 * libai-fann-perl
 * libfile-chdir-perl
@@ -20,65 +21,81 @@ The software is licensed under an [Academic Software License Agreement](https://
 * sift
 
 ### Databases
+
 * CBlast80
 * dbSwiss
 * SwissBlast
 * swiss_dat
 
-## HOWTO Install
-Installation routine according to https://rostlab.org/owiki/index.php/Debian_repository
 
-* sudo apt-get install python-software-properties
-* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
-* sudo apt-get update (ignore GPG error)
-* sudo apt-get install rostlab-debian-keyring (without verification)
-* sudo apt-get update
-* sudo apt-get install <PACKAGE> where <PACKAGE> is the package you want to install (e.g. 'profphd')
+## HOWTO Install
+
+Installation routine (according to https://rostlab.org/owiki/index.php/Debian_repository):
+
+```shell
+sudo apt-get install python-software-properties
+sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
+sudo apt-get update (ignore GPG error)
+sudo apt-get install rostlab-debian-keyring (without verification)
+sudo apt-get update
+sudo apt-get install <PACKAGE> # where <PACKAGE> is the package you want to install (e.g. 'profphd')
+```
 
 ### Debian Wheezy (7) (running)
 
-install essentials and add rostlab repository
-* cd ~
-* sudo apt-get update
-* sudo apt-get install csh vim wget build-essential devscripts debhelper devscripts python-software-properties
-* sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
-* sudo apt-get update
-* sudo apt-get install rostlab-debian-keyring
-* sudo apt-get update
+install essentials and add rostlab repository:
 
-install blimps the hard way
-* wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9-1.dsc
-* wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9.orig.tar.gz
-* wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9-1.debian.tar.gz
-* tar xzvf blimps_3.9.orig.tar.gz
-* tar xzvf blimps_3.9-1.debian.tar.gz
-* mv debian blimps-3.9/
-* mv blimps_3.9-1.dsc  blimps-3.9/
-* cd blimps-3.9
-* dpkg-source --commit
-* -> add a patch name -> ctrl+o -> return -> ctrl+x
-* debuild -us -uc
-* cd ..
-* sudo dpkg -i \*blimps\*.deb
+```
+cd ~
+sudo apt-get update
+sudo apt-get install csh vim wget build-essential devscripts debhelper devscripts python-software-properties
+sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
+sudo apt-get update
+sudo apt-get install rostlab-debian-keyring
+sudo apt-get update
+```
 
-install sift the hard way
-* wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b-4.debian.tar.gz
-* wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b-4.dsc
-* wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b.orig.tar.gz
-* tar xzvf sift_4.0.3b.orig.tar.gz
-* mv sift_4.0.3b-4.dsc sift4.0.3b/
-* tar xzvf sift_4.0.3b-4.debian.tar.gz
-* mv debian sift4.0.3b/
-* cd sift4.0.3b/
-* dpkg-source --commit
-* -> add a patch name -> ctrl+o -> return -> ctrl+x
-* debuild -us -uc
-* cd ..
-* sudo dpkg -i sift*.deb
+install blimps the hard way:
 
-install snap2 via aptitude
-* sudo apt-get install snap2
+```shell
+wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9-1.dsc
+wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9.orig.tar.gz
+wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9-1.debian.tar.gz
+tar xzvf blimps_3.9.orig.tar.gz
+tar xzvf blimps_3.9-1.debian.tar.gz
+mv debian blimps-3.9/
+mv blimps_3.9-1.dsc  blimps-3.9/
+cd blimps-3.9
+dpkg-source --commit
+# -> add a patch name -> ctrl+o -> return -> ctrl+x
+debuild -us -uc
+cd ..
+sudo dpkg -i \*blimps\*.deb
+```
 
+install sift the hard way:
+
+```shell
+wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b-4.debian.tar.gz
+wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b-4.dsc
+wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b.orig.tar.gz
+tar xzvf sift_4.0.3b.orig.tar.gz
+mv sift_4.0.3b-4.dsc sift4.0.3b/
+tar xzvf sift_4.0.3b-4.debian.tar.gz
+mv debian sift4.0.3b/
+cd sift4.0.3b/
+dpkg-source --commit
+# -> add a patch name -> ctrl+o -> return -> ctrl+x
+debuild -us -uc
+cd ..
+sudo dpkg -i sift*.deb
+```
+
+install snap2 via aptitude:
+
+```shell
+sudo apt-get install snap2
+```
 
 ### Ubuntu Precise (12.4) (not running yet)
 Installation routine
@@ -90,7 +107,7 @@ Installation routine
 * sudo apt-get update
 * sudo apt-get install snap2
 
-leads to output
+leads to output:
 ```
 Reading package lists... Done
 Building dependency tree
@@ -122,7 +139,7 @@ Installation routine
 * sudo apt-get update
 * sudo apt-get install snap2
 
-leads to
+leads to:
 ```
 Reading package lists... Done
 Building dependency tree
@@ -271,11 +288,13 @@ The software was initially developed, using svn as versioning tool. In scope of 
 ## Testing on various platforms using VM
 
 ### Requirements (tested on Mac OS X 10.10.)
+
 * Vagrant (tested with 1.7.4)
 * VirtualBox ~~(tested with 4.3.2)~~ (not running with 4.3.2, tested with 5.0.8)
 * local git repository directory called `$gitlocal` (so that the vagrant machines can be shared with co-developers)
 
 ### Procedure
+
 * enforce requirements
 * move to local git root `cd $gitlocal`
 * create a `.gitignore` file if it does not exist already
@@ -283,7 +302,7 @@ The software was initially developed, using svn as versioning tool. In scope of 
 * initialize vagrant
   * `vagrant init`
   * a `Vagrantfile` is initialized
-  * a folder `.vagrant`is initialized
+  * a folder `.vagrant` is initialized:
 * download the virtual machine image you want to use
   * https://atlas.hashicorp.com/ provides a great number of machines
   * the machines listed in the table below were tested
@@ -291,6 +310,7 @@ The software was initially developed, using svn as versioning tool. In scope of 
   * you will be asked for the provider of your choice. select yours (tested with virtualBox)
   * this may take a while ...
 * setup the downloaded box as box to be used by the provider on startup, by editing `Vagrantfile` s.t. it contains
+
 ```
 Vagrant.configure("2") do |config|
   config.vm.box = "debian/wheezy64"
