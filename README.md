@@ -7,43 +7,11 @@ The implementation started in November 2011 by Maximilian Hecht. Perl is the pro
 
 The software is licensed under an [Academic Software License Agreement](https://rostlab.org/owiki/index.php/Academic_Software_License_Agreement).
 
-## Dependencies
-
-### Software
-
-* blast2
-* libai-fann-perl
-* libfile-chdir-perl
-* librg-utils-perl
-* predictprotein
-* reprof
-* run-psic
-* sift
-
-### Databases
-
-* CBlast80
-* dbSwiss
-* SwissBlast
-* swiss_dat
-
-
 ## HOWTO Install
 
-Installation routine (according to https://rostlab.org/owiki/index.php/Debian_repository):
+The recommended and tested environment is **Debian Wheezy (7)**. See [the wiki](https://github.com/Rostlab/SNAP2/wiki/Installation-and-Environments) for instructions on other environments and more details about the installation process and dependencies.
 
-```shell
-sudo apt-get install python-software-properties
-sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
-sudo apt-get update (ignore GPG error)
-sudo apt-get install rostlab-debian-keyring (without verification)
-sudo apt-get update
-sudo apt-get install <PACKAGE> # where <PACKAGE> is the package you want to install (e.g. 'profphd')
-```
-
-### Debian Wheezy (7) (running)
-
-install essentials and add rostlab repository:
+Install essentials and add rostlab repository:
 
 ```
 cd ~
@@ -55,7 +23,7 @@ sudo apt-get install rostlab-debian-keyring
 sudo apt-get update
 ```
 
-install blimps the hard way:
+Install blimps the hard way:
 
 ```shell
 wget https://launchpad.net/debian/+archive/primary/+files/blimps_3.9-1.dsc
@@ -73,7 +41,7 @@ cd ..
 sudo dpkg -i \*blimps\*.deb
 ```
 
-install sift the hard way:
+Install sift the hard way:
 
 ```shell
 wget http://rostlab.org/debian/pool/non-free/s/sift/sift_4.0.3b-4.debian.tar.gz
@@ -91,79 +59,12 @@ cd ..
 sudo dpkg -i sift*.deb
 ```
 
-install snap2 via aptitude:
+Install snap2 via aptitude:
 
 ```shell
 sudo apt-get install snap2
 ```
 
-### Ubuntu Precise (12.4) (not running yet)
-Installation routine
-
-```shell
-sudo apt-get update
-sudo apt-get install python-software-properties
-sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free"
-sudo apt-get update
-sudo apt-get install rostlab-debian-keyring
-sudo apt-get update
-sudo apt-get install snap2
-```
-
-leads to output:
-```
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-Some packages could not be installed. This may mean that you have
-requested an impossible situation or if you are using the unstable
-distribution that some required packages have not yet been created
-or been moved out of Incoming.
-The following information may help to resolve the situation:
-
-The following packages have unmet dependencies:
- snap2 : Depends: predictprotein but it is not going to be installed
-         Depends: reprof but it is not installable
-         Depends: sift (>= 4.0.3b) but it is not installable
-E: Unable to correct problems, you have held broken packages.
-```
-
-Installing dependency packages also fails with the same error, fetching their source code (`sudo apt-get source reprof`) works in some cases, but does not improve anything (of course (just have been interested in)).
-
-### Debian Squeeze (6) (not running yet)
-Installation routine
-
-```shell
-sudo apt-get update
-sudo apt-get install python-software-properties -> useless see below
-sudo apt-get install --fix-missing python-software-properties -> because of smaller errors
-sudo apt-add-repository "deb http://rostlab.org/debian/ stable main contrib non-free" -> apt-add-repo not known
-sudo echo "deb http://rostlab.org/debian/ stable main contrib non-free\ndeb http://rostlab.org/debian/ stable main contrib non-free" >> /etc/apt/sources.list
-sudo apt-get update
-sudo apt-get install rostlab-debian-keyring
-sudo apt-get update
-sudo apt-get install snap2
-```
-
-leads to:
-```
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-Some packages could not be installed. This may mean that you have
-requested an impossible situation or if you are using the unstable
-distribution that some required packages have not yet been created
-or been moved out of Incoming.
-The following information may help to resolve the situation:
-
-The following packages have unmet dependencies:
- snap2 : Depends: libai-fann-perl but it is not installable
-         Depends: predictprotein but it is not going to be installed
-         Depends: reprof but it is not installable
-         Depends: sift (>= 4.0.3b) but it is not installable
-         Recommends: pp-popularity-contest but it is not installable
-E: Broken packages
-```
 
 ## HOWTO get and configure databases
 
