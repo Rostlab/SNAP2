@@ -154,8 +154,20 @@ For detailed information about the method, its results, and interpretations, ref
 
 ### Training / Test data
 
-* 100000 variants from OMIM, PMD and enzyme.expasy.org
-* `TODO` more info?
+* 101,515 variants from PMD, SwissProt, OMIM, and HumVar either classified as 'neutral' or 'effect'
+  * PMD = Protein Mutant Database
+    * PMD annotations 'no change' --> neutral
+    * PMD annotations with any level of in- or decrease in function --> effect
+    * 51,817 variants (13,638 neutral, 38,179 effect) in 4,061 proteins
+  * Enzyme Commission number (EC number) retrieved from SwissProt that classifies an enzyme's function
+    * Two variants have the same number --> neutral
+    * 26,840 neutral variants in 2,146 proteins
+  * OMIM & HUmVar are disease data bases
+    * disease-associated variants --> effect
+    * 22,858 effect variants in 3,537 proteins
+* tenfold cross-validation
+  * 8 for training, 1 for cross-training, 1 for testing
+  * ```to do```describe how the subsets are determined
 
 
 ### Publications and other Resources
