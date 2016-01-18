@@ -148,26 +148,15 @@ For detailed information about the method, its results, and interpretations, ref
 * Description
   * feature calculation (using predict protein pipeline)
   * neural network with 650 input, 100 hidden and 2 output nodes
-  * all 10 models from 10-fold cross validation used to calculate results
+  * all 10 models from 10-fold cross validation used to calculate the results
   * 10 results averaged in jury decision
 
 
 ### Training / Test data
 
-* 101,515 variants from PMD, SwissProt, OMIM, and HumVar either classified as 'neutral' or 'effect'
-  * PMD = Protein Mutant Database
-    * PMD annotations 'no change' --> neutral
-    * PMD annotations with any level of in- or decrease in function --> effect
-    * 51,817 variants (13,638 neutral, 38,179 effect) in 4,061 proteins
-  * Enzyme Commission number (EC number) retrieved from SwissProt that classifies an enzyme's function
-    * Two variants have the same number --> neutral
-    * 26,840 neutral variants in 2,146 proteins
-  * OMIM & HUmVar are disease data bases
-    * disease-associated variants --> effect
-    * 22,858 effect variants in 3,537 proteins
-* tenfold cross-validation
-  * 8 for training, 1 for cross-training, 1 for testing
-  * ```to do```describe how the subsets are determined
+About 100,000 variants from the Protein Mutant Database (PMD), SwissProt, OMIM and HumVar are used for testing and training of SNAP2. The variants are either classified as 'neutral' or 'effect'.
+
+If a variant is annotated with 'no change' in PMD, the variant is classified as neutral. If there is any change in its function independent of in- or decrease, it is classified as effect. The function of enzymes that are listed in SwissProt is descibed by the Enzyme Commission (EC) number. If two variants have the same EC number, they are classified as neutral. The databases OMIM and HumVar contain protein variants that are associated with diseases. Therefore, they provide variants with an effect.
 
 
 ### Publications and other Resources
