@@ -162,11 +162,13 @@ If a variant is annotated with 'no change' in PMD, the variant is classified as 
 
 
 ### Publications and other Resources
-* Hecht, M., Bromberg, Y., & Rost, B. (2015). Better prediction of functional effects for sequence variants. BMC Genomics, 16(Suppl 8), S1 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/26110438)
+* Hecht, M., Bromberg, Y., & Rost, B. (2015). Better prediction of functional effects for sequence variants. BMC Genomics, 16(Suppl 8), S1 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/26110438) [Full PDF](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4480835/pdf/1471-2164-16-S8-S1.pdf)
 * Bromberg Y & Rost B. (2007). SNAP: predict effect of non-synonymous polymorphisms on function. Nucleic Acids Research, Vol. 35, No. 11 3823-3835 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/17526529) [Full PDF](http://rostlab.org/~hecht/snap.pdf)
 * Hecht, M., Bromberg, Y., & Rost, B. (2013). News from the protein mutability landscape. Journal of molecular biology, 425(21), 3937-3948 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/23896297) [Full PDF](http://rostlab.org/~snap2web/snap2landscape.pdf)
 * SNAP2 Wiki by Rostlab.org (https://rostlab.org/owiki/index.php/Snap2)
 
 ### Evaluation
 
-`TODO`
+SNAP2 was compared with the original version SNAP, SIFT, and PolyPhen-2
+
+<img src="https://github.com/Rostlab/SNAP2/blob/develop/doc/ROC.png?raw=true" width="400"/>
