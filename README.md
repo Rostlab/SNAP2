@@ -147,11 +147,19 @@ For detailed information about the method, its results, and interpretations, ref
 ## Method Description
 
 * Author: Maximilian Hecht
+* Year of public: 2015
 * Description
   * feature calculation (using predict protein pipeline)
   * neural network with 650 input, 100 hidden and 2 output nodes
   * all 10 models from 10-fold cross validation used to calculate the results
   * 10 results averaged in jury decision
+
+
+### Publications and other Resources
+* Hecht, M., Bromberg, Y., & Rost, B. (2015). Better prediction of functional effects for sequence variants. BMC Genomics, 16(Suppl 8), S1 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/26110438) [Full PDF](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4480835/pdf/1471-2164-16-S8-S1.pdf)
+* Bromberg Y & Rost B. (2007). SNAP: predict effect of non-synonymous polymorphisms on function. Nucleic Acids Research, Vol. 35, No. 11 3823-3835 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/17526529) [Full PDF](http://rostlab.org/~hecht/snap.pdf)
+* Hecht, M., Bromberg, Y., & Rost, B. (2013). News from the protein mutability landscape. Journal of molecular biology, 425(21), 3937-3948 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/23896297) [Full PDF](http://rostlab.org/~snap2web/snap2landscape.pdf)
+* SNAP2 Wiki by Rostlab.org (https://rostlab.org/owiki/index.php/Snap2)
 
 
 ### Training / Test data
@@ -160,12 +168,6 @@ About 100,000 variants from the Protein Mutant Database (PMD), SwissProt, OMIM a
 
 If a variant is annotated with 'no change' in PMD, the variant is classified as neutral. If there is any change in its function independent of in- or decrease, it is classified as effect. The function of enzymes that are listed in SwissProt is descibed by the Enzyme Commission (EC) number. If two variants have the same EC number, they are classified as neutral. The databases OMIM and HumVar contain protein variants that are associated with diseases. Therefore, they provide variants with an effect.
 
-
-### Publications and other Resources
-* Hecht, M., Bromberg, Y., & Rost, B. (2015). Better prediction of functional effects for sequence variants. BMC Genomics, 16(Suppl 8), S1 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/26110438) [Full PDF](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4480835/pdf/1471-2164-16-S8-S1.pdf)
-* Bromberg Y & Rost B. (2007). SNAP: predict effect of non-synonymous polymorphisms on function. Nucleic Acids Research, Vol. 35, No. 11 3823-3835 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/17526529) [Full PDF](http://rostlab.org/~hecht/snap.pdf)
-* Hecht, M., Bromberg, Y., & Rost, B. (2013). News from the protein mutability landscape. Journal of molecular biology, 425(21), 3937-3948 [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/23896297) [Full PDF](http://rostlab.org/~snap2web/snap2landscape.pdf)
-* SNAP2 Wiki by Rostlab.org (https://rostlab.org/owiki/index.php/Snap2)
 
 ### Evaluation
 
