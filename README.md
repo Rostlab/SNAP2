@@ -135,6 +135,16 @@ swiss=/home/snap_db/uniprot_sprot.fasta
 
 Note, however, that given the standard configuration of predictprotein at `/usr/share/predictprotein/predictproteinrc.default`, the tool still throws an error. 
 
+### HOWTO workaround the "runtime" error due to probable configuration errors
+
+* download a predictprotein virtual machine image (https://rostlab.org/services/ppmi/)
+* download the database set, which is offer as download together with the image
+* get the virtual machine to run
+* make the databases available inside the virtual machine
+* change all paths in `/usr/share/predictprotein/predictproteinrc.default` and `/usr/share/snap2/snap2rc.default` to the databases, you made available to the virtual machine
+
+Make sure to generate the machine on a strong enough hardware, as snap2 uses a lot of memory.
+
 ## HOWTO Run
 
 ### HOWTO Use the Web Service
